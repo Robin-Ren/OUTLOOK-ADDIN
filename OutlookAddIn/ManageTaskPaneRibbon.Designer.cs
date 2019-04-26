@@ -67,7 +67,8 @@
             // ManageTaskPaneRibbon
             // 
             this.Name = "ManageTaskPaneRibbon";
-            this.RibbonType = "Microsoft.Outlook.Appointment, Microsoft.Outlook.Task";
+            this.RibbonType = "Microsoft.Outlook.Appointment, Microsoft.Outlook.MeetingRequest.Send, Microsoft.O" +
+    "utlook.Task";
             this.Tabs.Add(this.tab1);
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.ManageTaskPaneRibbon_Load);
             this.tab1.ResumeLayout(false);

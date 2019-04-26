@@ -31,14 +31,6 @@ namespace OutlookAddIn
         {
             InitializeComponent();
 
-            //var dialogHost = new DialogHost();
-            //var binding = new CommandBinding(DialogHost.OpenDialogCommand, dialogHost.OpenDialogHandler, CanOpenDialog);
-            //// Register CommandBinding for all windows.
-            //CommandManager.RegisterClassCommandBinding(typeof(UserControl), binding);
-            //DialogHost.SetDialogOpenedAttached(btnMeetingTo, ToDialogOpenedEventHandler);
-            //DialogHost.SetDialogClosingAttached(btnMeetingTo, ToDialogClosingEventHandler);
-            //dialogHost.OnApplyTemplate();
-
             DataContext = new MeetingAddinViewModel();
         }
 
@@ -60,36 +52,27 @@ namespace OutlookAddIn
 
                 // Get the active Inspector object and check if is type of MailItem
                 Outlook.Inspector inspector = application.ActiveInspector();
-                Outlook.AppointmentItem meetingItem = inspector.CurrentItem as Outlook.AppointmentItem;
+                var meetingItem = inspector.CurrentItem as Outlook.AppointmentItem;
+                Outlook.TaskItem taskItem;
                 if (meetingItem == null)
                 {
-                    MessageBox.Show("the meeting is null,create a meeting Item");
-                    meetingItem = (Outlook.AppointmentItem)inspector.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olAppointmentItem);
-                    return;
+                    taskItem = (Outlook.TaskItem)inspector.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olTaskItem);
+
+                    if (taskItem == null)
+                    {
+                        MessageBox.Show("the meeting is null, please create a meeting or task!");
+                        return;
+                    }
                 }
 
                 //meetingItem.Location = cboRooms.SelectedItem.ToString();
 
                 meetingItem.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
                 meetingItem.Body = "Robin is the best!";
-
-                object missing = System.Reflection.Missing.Value;
-                //Microsoft.Office.Interop.Word.Application wordAppl;
-                //Word.Document wordDoc;
-                //Word.Selection wordSel = null;
-                //wordDoc = (Word.Document)inspector.WordEditor;
-                //wordAppl = wordDoc.Parent as Word.Application;
-                //wordDoc.Activate();
-                //String path = "D://en_US.rtf";
-                //String fileName = path.ToString();
-                //wordSel = (Word.Selection)wordAppl.Selection;
-                //wordSel.Range.Delete(ref missing, ref missing);
-                //object falseRef = false;
-                //wordSel.Range.InsertFile(fileName, ref missing, ref falseRef, ref falseRef, ref falseRef);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Robbin click error!" + ex.ToString());
+                MessageBox.Show("Ribbon click error!" + ex.ToString());
             }
         }
 

@@ -19,8 +19,7 @@ namespace OutlookAddIn
         public TaskPaneControl()
         {
             InitializeComponent();
-
-            this.Width = 1100;
+            this.MinimumSize = new Size(600, 400);
         }
     }
 }

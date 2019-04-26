@@ -24,6 +24,7 @@ namespace OutlookAddIn
             if (taskPane != null)
             {
                 taskPane.Visible = ((RibbonToggleButton)sender).Checked;
+                taskPane.Width = 600;
             }
         }
     }
