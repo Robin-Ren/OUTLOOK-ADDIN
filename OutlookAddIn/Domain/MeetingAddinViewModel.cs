@@ -149,9 +149,7 @@ namespace OutlookAddIn.Domain
                     return;
                 }
 
-                meetingItem.Location = string.IsNullOrEmpty(SelectedMeetingRoom)
-                    ? string.Empty
-                    : SelectedMeetingRoom.ToString();
+                meetingItem.Location = SelectedMeetingRoom;
 
                 meetingItem.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
                 meetingItem.Body = MailBody;
