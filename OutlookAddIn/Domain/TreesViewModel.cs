@@ -69,9 +69,9 @@ namespace OutlookAddIn.Domain
 
         public ObservableCollection<MovieCategory> MovieCategories { get; }
 
-        public AnotherCommandImplementation AddCommand { get; }
+        public RelayCommand AddCommand { get; }
 
-        public AnotherCommandImplementation RemoveSelectedItemCommand { get; }
+        public RelayCommand RemoveSelectedItemCommand { get; }
 
         public object SelectedItem
         {
@@ -96,7 +96,7 @@ namespace OutlookAddIn.Domain
                 )
             };
 
-            AddCommand = new AnotherCommandImplementation(
+            AddCommand = new RelayCommand(
                 _ =>
                 {
                     if (!MovieCategories.Any())
@@ -112,7 +112,7 @@ namespace OutlookAddIn.Domain
                     }
                 });
 
-            RemoveSelectedItemCommand = new AnotherCommandImplementation(
+            RemoveSelectedItemCommand = new RelayCommand(
                 _ =>
                 {
                     var movieCategory = SelectedItem as MovieCategory;

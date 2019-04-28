@@ -35,7 +35,7 @@
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.65</ApplicationVersion>
+    <ApplicationVersion>1.0.0.76</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -213,7 +213,11 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Domain\AnotherCommandImplementation.cs" />
+    <Compile Include="Domain\ABaseViewModel.cs" />
+    <Compile Include="Domain\ApplicationConstants.cs" />
+    <Compile Include="Domain\MessageBoxCloser.cs" />
+    <Compile Include="Domain\ObservableCollectionWrapper.cs" />
+    <Compile Include="Domain\RelayCommand.cs" />
     <Compile Include="Domain\DemoItem.cs" />
     <Compile Include="Domain\DialogsViewModel.cs" />
     <Compile Include="Domain\DocumentationLink.cs" />
@@ -246,8 +250,13 @@
     <Compile Include="Domain\TextFieldsViewModel.cs" />
     <Compile Include="Domain\TreesViewModel.cs" />
     <Compile Include="Domain\MeetingAddinViewModel.cs" />
+    <Compile Include="Domain\WindowDialogService.cs" />
+    <Compile Include="Domain\WindowDialogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\EmptyWindow.xaml.cs">
+      <DependentUpon>EmptyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WpfUserControl.xaml.cs">
       <DependentUpon>WpfUserControl.xaml</DependentUpon>
@@ -322,6 +331,10 @@
     <Page Include="Domain\SampleProgressDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EmptyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WpfUserControl.xaml">
       <SubType>Designer</SubType>

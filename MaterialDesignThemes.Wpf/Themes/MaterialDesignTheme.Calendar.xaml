@@ -319,7 +319,7 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <wpf:Card UniformCornerRadius="2"  Background="{TemplateBinding Background}" wpf:ShadowAssist.ShadowDepth="Depth0">
+                        <wpf:Card UniformCornerRadius="2"  Background="{TemplateBinding Background}" wpf:ShadowAssist.ShadowDepth="Depth3">
                             <Grid>
                                 <Grid.Resources>
                                     <ControlTemplate x:Key="PreviousButtonTemplate" TargetType="{x:Type Button}">

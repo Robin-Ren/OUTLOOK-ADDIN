@@ -388,8 +388,12 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <Border Background="{DynamicResource PrimaryHueMidBrush}" Height="120"  CornerRadius="2 2 0 0">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 6 38 0"
+                            <Border Background="{DynamicResource PrimaryHueMidBrush}"
+                                    Height="120"
+                                    CornerRadius="2 2 0 0"
+                                    wpf:ShadowAssist.ShadowDepth="Depth3"
+                                    Margin="0">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 38 0"
                                             x:Name="TimeReadoutStackPanel">
                                     <StackPanel.Resources>
                                         <Style x:Key="TimeTextBlock" TargetType="{x:Type TextBlock}">

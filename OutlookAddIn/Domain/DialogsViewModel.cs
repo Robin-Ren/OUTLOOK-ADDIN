@@ -13,16 +13,16 @@ namespace MaterialDesignDemo.Domain
         public DialogsViewModel()
         {
             //Sample 4
-            OpenSample4DialogCommand = new AnotherCommandImplementation(OpenSample4Dialog);
-            AcceptSample4DialogCommand = new AnotherCommandImplementation(AcceptSample4Dialog);
-            CancelSample4DialogCommand = new AnotherCommandImplementation(CancelSample4Dialog);
+            OpenSample4DialogCommand = new RelayCommand(OpenSample4Dialog);
+            AcceptSample4DialogCommand = new RelayCommand(AcceptSample4Dialog);
+            CancelSample4DialogCommand = new RelayCommand(CancelSample4Dialog);
         }
 
         #region SAMPLE 3
 
-        public ICommand RunDialogCommand => new AnotherCommandImplementation(ExecuteRunDialog);
+        public ICommand RunDialogCommand => new RelayCommand(ExecuteRunDialog);
 
-        public ICommand RunExtendedDialogCommand => new AnotherCommandImplementation(ExecuteRunExtendedDialog);
+        public ICommand RunExtendedDialogCommand => new RelayCommand(ExecuteRunExtendedDialog);
 
         private async void ExecuteRunDialog(object o)
         {

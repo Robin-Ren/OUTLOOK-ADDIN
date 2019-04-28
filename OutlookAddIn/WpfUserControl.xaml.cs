@@ -43,43 +43,10 @@ namespace OutlookAddIn
         {
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Get the Application object
-                Outlook.Application application = Globals.ThisAddIn.Application;
-
-                // Get the active Inspector object and check if is type of MailItem
-                Outlook.Inspector inspector = application.ActiveInspector();
-                var meetingItem = inspector.CurrentItem as Outlook.AppointmentItem;
-                Outlook.TaskItem taskItem;
-                if (meetingItem == null)
-                {
-                    taskItem = (Outlook.TaskItem)inspector.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olTaskItem);
-
-                    if (taskItem == null)
-                    {
-                        MessageBox.Show("the meeting is null, please create a meeting or task!");
-                        return;
-                    }
-                }
-
-                //meetingItem.Location = cboRooms.SelectedItem.ToString();
-
-                meetingItem.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
-                meetingItem.Body = "Robin is the best!";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Ribbon click error!" + ex.ToString());
-            }
-        }
-
         public void FromDialogOpenedEventHandler(object sender, DialogOpenedEventArgs eventArgs)
         {
-            CombinedCalendarFrom.SelectedDate = ((MeetingAddinViewModel)DataContext).DateStart;
-            CombinedClockFrom.Time = ((MeetingAddinViewModel)DataContext).TimeStart;
+            CombinedCalendarFrom.SelectedDate = ((MeetingAddinViewModel)DataContext).DateStart.AddSeconds(-((MeetingAddinViewModel)DataContext).DateStart.TimeOfDay.TotalSeconds);
+            CombinedClockFrom.Time = ((MeetingAddinViewModel)DataContext).DateStart;
         }
 
         public void FromDialogClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
@@ -87,18 +54,16 @@ namespace OutlookAddIn
             if (Equals(eventArgs.Parameter, "1"))
             {
                 var combined = CombinedCalendarFrom.SelectedDate.Value.AddSeconds(CombinedClockFrom.Time.TimeOfDay.TotalSeconds);
-                ((MeetingAddinViewModel)DataContext).TimeStart = combined;
                 ((MeetingAddinViewModel)DataContext).DateStart = combined;
 
-                ((MeetingAddinViewModel)DataContext).TimeEnd = combined.AddHours(1);
                 ((MeetingAddinViewModel)DataContext).DateEnd = combined.AddHours(1);
             }
         }
 
         public void ToDialogOpenedEventHandler(object sender, DialogOpenedEventArgs eventArgs)
         {
-            CombinedCalendarTo.SelectedDate = ((MeetingAddinViewModel)DataContext).DateEnd;
-            CombinedClockTo.Time = ((MeetingAddinViewModel)DataContext).TimeEnd;
+            CombinedCalendarTo.SelectedDate = ((MeetingAddinViewModel)DataContext).DateEnd.AddSeconds(-((MeetingAddinViewModel)DataContext).DateEnd.TimeOfDay.TotalSeconds);
+            CombinedClockTo.Time = ((MeetingAddinViewModel)DataContext).DateEnd;
         }
 
         public void ToDialogClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
@@ -106,17 +71,25 @@ namespace OutlookAddIn
             if (Equals(eventArgs.Parameter, "1"))
             {
                 var combined = CombinedCalendarTo.SelectedDate.Value.AddSeconds(CombinedClockTo.Time.TimeOfDay.TotalSeconds);
-                ((MeetingAddinViewModel)DataContext).TimeEnd = combined;
                 ((MeetingAddinViewModel)DataContext).DateEnd = combined;
             }
         }
 
         private void Attendees_OnDialogClosing(object sender, DialogClosingEventArgs eventArgs)
         {
-            if (!Equals(eventArgs.Parameter, true)) return;
+            try
+            {
+                if (eventArgs.Parameter is TextBox txtNewAttendee
+                    && !string.IsNullOrWhiteSpace(txtNewAttendee.Text))
+                {
+                    ((MeetingAddinViewModel)DataContext).OnAddRecipient(txtNewAttendee.Text);
+                }
+            }
+            catch (Exception e)
+            {
+            }
 
-            if (!string.IsNullOrWhiteSpace(Attendee.Text))
-                AttendeesList.Items.Add(Attendee.Text.Trim());
+            return;
         }
     }
 }

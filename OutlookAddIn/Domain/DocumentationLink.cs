@@ -15,7 +15,7 @@ namespace OutlookAddIn.Domain
             Label = label ?? type.ToString();
             Url = url;
             Type = type;
-            Open = new AnotherCommandImplementation(Execute);
+            Open = new RelayCommand(Execute);
         }
 
         public string Label { get; }
