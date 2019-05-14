@@ -20,6 +20,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{7BEFA48D-D92
 		web\PaletteBuilder.html = web\PaletteBuilder.html
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packages", "packages", "{2ED6E99C-9922-4990-96AC-325D8765ACC2}"
+	ProjectSection(SolutionItems) = preProject
+		Assemblies\ICSharpCode.AvalonEdit.dll = Assemblies\ICSharpCode.AvalonEdit.dll
+		Assemblies\ShowMeTheXAML.AvalonEdit.dll = Assemblies\ShowMeTheXAML.AvalonEdit.dll
+		Assemblies\ShowMeTheXAML.dll = Assemblies\ShowMeTheXAML.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AppVeyor|Any CPU = AppVeyor|Any CPU

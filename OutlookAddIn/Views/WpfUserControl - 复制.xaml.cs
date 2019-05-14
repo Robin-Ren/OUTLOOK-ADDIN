@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
 using OutlookAddIn.Domain;
+using OutlookAddIn.CustomScheduler;
+using OutlookAddIn.CustomScheduler.Model;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Word = Microsoft.Office.Interop.Word;
@@ -23,15 +25,16 @@ using Word = Microsoft.Office.Interop.Word;
 namespace OutlookAddIn
 {
     /// <summary>
-    /// WpfUserControl.xaml 的交互逻辑
+    /// WpfUserControl.xaml
     /// </summary>
-    public partial class WpfUserControl : UserControl
+    public partial class WpfUserControl1 : UserControl
     {
-        public WpfUserControl()
+        public WpfUserControl1()
         {
             InitializeComponent();
 
             DataContext = new MeetingAddinViewModel();
+            //SetCurrentValue(CustomScheduler.Controls.Calendar.AppointmentsProperty, new Appointments());
         }
 
         private void CanOpenDialog(object sender, CanExecuteRoutedEventArgs e)
@@ -41,23 +44,24 @@ namespace OutlookAddIn
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            SetCurrentValue(CustomScheduler.Controls.Calendar.AppointmentsProperty, new Appointments());
         }
 
         public void FromDialogOpenedEventHandler(object sender, DialogOpenedEventArgs eventArgs)
         {
-            CombinedCalendarFrom.SelectedDate = ((MeetingAddinViewModel)DataContext).DateStart.AddSeconds(-((MeetingAddinViewModel)DataContext).DateStart.TimeOfDay.TotalSeconds);
-            CombinedClockFrom.Time = ((MeetingAddinViewModel)DataContext).DateStart;
+            //CombinedCalendarFrom.SelectedDate = ((MeetingAddinViewModel)DataContext).DateStart.AddSeconds(-((MeetingAddinViewModel)DataContext).DateStart.TimeOfDay.TotalSeconds);
+            //CombinedClockFrom.Time = ((MeetingAddinViewModel)DataContext).DateStart;
         }
 
         public void FromDialogClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
         {
-            if (Equals(eventArgs.Parameter, "1"))
-            {
-                var combined = CombinedCalendarFrom.SelectedDate.Value.AddSeconds(CombinedClockFrom.Time.TimeOfDay.TotalSeconds);
-                ((MeetingAddinViewModel)DataContext).DateStart = combined;
+            //if (Equals(eventArgs.Parameter, "1"))
+            //{
+            //    var combined = CombinedCalendarFrom.SelectedDate.Value.AddSeconds(CombinedClockFrom.Time.TimeOfDay.TotalSeconds);
+            //    ((MeetingAddinViewModel)DataContext).DateStart = combined;
 
-                ((MeetingAddinViewModel)DataContext).DateEnd = combined.AddHours(1);
-            }
+            //    ((MeetingAddinViewModel)DataContext).DateEnd = combined.AddHours(1);
+            //}
         }
 
         public void ToDialogOpenedEventHandler(object sender, DialogOpenedEventArgs eventArgs)
@@ -90,6 +94,20 @@ namespace OutlookAddIn
             }
 
             return;
+        }
+
+        private void Calendar_AddAppointment(object sender, RoutedEventArgs e)
+        {
+            Appointment appointment = new Appointment();
+            appointment.Subject = "Subject?";
+            appointment.StartTime = new DateTime(2008, 10, 22, 16, 00, 00);
+            appointment.EndTime = new DateTime(2008, 10, 22, 17, 00, 00);
+
+            AddAppointmentWindow aaw = new AddAppointmentWindow();
+            aaw.DataContext = appointment;
+            aaw.ShowDialog();
+
+            ((MeetingAddinViewModel)DataContext).Appointments.Add(appointment);
         }
     }
 }

@@ -54,7 +54,19 @@
       <Link>VirtualCollection/VirtualizingWrapPanel.cs</Link>
     </Compile>
     <Compile Include="XamlDisplayEx.cs" />
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="ShowMeTheXAML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ShowMeTheXAML.dll</HintPath>
+    </Reference>
+    <Reference Include="ShowMeTheXAML.AvalonEdit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ShowMeTheXAML.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -463,37 +475,13 @@
     <Error Condition="('$(ShowMeTheXAMLGeneratedFileName)' == '' Or $(ShowMeTheXAMLGeneratedFileName) == '*Undefined*') And Exists('..\packages\ShowMeTheXAML.MSBuild\build\$(__paket__ShowMeTheXAML_MSBuild_targets).targets')" Text="ShowMeTheXAML was added to the $(ProjectName) project. Please rebuild the project." />
   </Target>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.2')">
-      <ItemGroup>
-        <Reference Include="ICSharpCode.AvalonEdit">
-          <HintPath>..\packages\AvalonEdit\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.2')" />
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.2')">
-      <ItemGroup>
-        <Reference Include="ShowMeTheXAML">
-          <HintPath>..\packages\ShowMeTheXAML\lib\net45\ShowMeTheXAML.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.2')" />
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.2')">
-      <ItemGroup>
-        <Reference Include="ShowMeTheXAML.AvalonEdit">
-          <HintPath>..\packages\ShowMeTheXAML.AvalonEdit\lib\net45\ShowMeTheXAML.AvalonEdit.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.2')" />
   </Choose>
   <Import Project="..\packages\ShowMeTheXAML.MSBuild\build\$(__paket__ShowMeTheXAML_MSBuild_targets).targets" Condition="Exists('..\packages\ShowMeTheXAML.MSBuild\build\$(__paket__ShowMeTheXAML_MSBuild_targets).targets')" Label="Paket" />
 </Project>

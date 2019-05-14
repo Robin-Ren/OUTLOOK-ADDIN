@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using OutlookAddIn.CustomScheduler.Model;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Word = Microsoft.Office.Interop.Word;
@@ -21,10 +23,36 @@ namespace OutlookAddIn.Domain
         private string _selectedMeetingRoom;
         private string _selectedRecipient;
         private ObservableCollection<string> _recipients;
+        private Appointments _appointments;
+        /// <summary>
+        /// The current view model being displayed.
+        /// This may not be the selected tab as that tab could have sub views.
+        /// </summary>
+        private ABaseViewModel _currentViewModel;
+
+        private static BookingsViewModel _bookingViewModel;
         #endregion
 
-
         #region Public Properties
+        /// <summary>
+        /// The current view model.
+        /// </summary>
+        public ABaseViewModel CurrentViewModel
+        {
+            get
+            {
+                return _currentViewModel;
+            }
+            set
+            {
+                if (_currentViewModel != value)
+                {
+                    _currentViewModel = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public DateTime DateStart
         {
             get { return _dateStart; }
@@ -94,6 +122,17 @@ namespace OutlookAddIn.Domain
             }
         }
 
+        public Appointments Appointments
+        {
+            get
+            { return _appointments; }
+            set
+            {
+                _appointments = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Gets and sets the list of meeting rooms.
         public List<string> AvailableMeetingRooms { get; set; }
@@ -102,7 +141,6 @@ namespace OutlookAddIn.Domain
         #region Commands
         public ICommand AcceptCommand { get; set; }
         public ICommand CancelCommand { get; set; }
-        public ICommand AddRecipientCommand { get; set; }
         #endregion
 
         public MeetingAddinViewModel()
@@ -110,6 +148,12 @@ namespace OutlookAddIn.Domain
             DateStart = DateTime.Now;
             DateEnd = DateTime.Now;
             SelectedMeetingRoom = null;
+
+            // Initialize booking view model
+            if (_bookingViewModel == null)
+            {
+                InitializeBookingsViewModel(null, null);
+            }
 
             AvailableMeetingRooms = new List<string>
             {
@@ -129,7 +173,17 @@ namespace OutlookAddIn.Domain
             // Commands
             AcceptCommand = new RelayCommand(OnAccept);
             CancelCommand = new RelayCommand(OnCancel);
-            AddRecipientCommand = new RelayCommand(OnAddRecipient);
+        }
+
+        /// <summary>
+        /// Initialize Bookings view model object
+        /// </summary>
+        private void InitializeBookingsViewModel(object sender, EventArgs e)
+        {
+            _bookingViewModel = new BookingsViewModel();
+            _bookingViewModel.ClearEventInvocations("OpenNewBookingRooms");
+            BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
+            CurrentViewModel = _bookingViewModel;
         }
 
         #region Command Implementations
@@ -184,36 +238,43 @@ namespace OutlookAddIn.Domain
 
         }
 
-        private void OnAddRecipient(object obj)
+        private void OnOpenNewBookingRoomsDialog(object sender, EventArgs e)
         {
-            try
-            {
-                if (obj is TextBox txtNewAttendee
-                    && !string.IsNullOrWhiteSpace(txtNewAttendee.Text))
-                {
-                    Recipients.Add(txtNewAttendee.Text);
-                    OnPropertyChanged("Recipients");
-                }
-            }
-            catch (Exception e)
-            {
-            }
-        }
+            RoomsViewModel roomsModel = new RoomsViewModel();
 
-        public void OnAddRecipient(string attendee)
-        {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(attendee))
+            roomsModel.AvailableRooms.Add(
+                new Room
                 {
-                    Recipients.Add(attendee);
-                    OnPropertyChanged("Recipients");
-                }
-            }
-            catch (Exception e)
-            {
-            }
+                    RoomName = "Room 001"
+                });
+            roomsModel.AvailableRooms.Add(
+                new Room
+                {
+                    RoomName = "Room 002"
+                });
+            roomsModel.AvailableRooms.Add(
+                new Room
+                {
+                    RoomName = "Room 003"
+                });
+            roomsModel.AvailableRooms.Add(
+                new Room
+                {
+                    RoomName = "Room 004"
+                });
+            roomsModel.AvailableRooms.Add(
+                new Room
+                {
+                    RoomName = "Room 005"
+                });
+
+            roomsModel.ClearEventInvocations("NagigateToBookings");
+            RoomsViewModel.NagigateToBookings += InitializeBookingsViewModel;
+
+            // Set the rooms as the current view model
+            CurrentViewModel = roomsModel;
         }
         #endregion Command Implementations
+
     }
 }

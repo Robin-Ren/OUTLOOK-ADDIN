@@ -1,10 +1,11 @@
-﻿<UserControl x:Class="OutlookAddIn.WpfUserControl"
+﻿<UserControl x:Class="OutlookAddIn.WpfUserControl1"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -33,6 +34,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Calendar.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/OutlookAddIn;component/CustomScheduler/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Color x:Key="Primary500Foreground">#DDFFFFFF</Color>
             <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" po:Freeze="True" />
@@ -71,7 +73,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1"
                             Margin="8,12,0,0" Orientation="Horizontal">
-                        <materialDesign:DialogHost 
+                        <!--<materialDesign:DialogHost 
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             DialogOpened="FromDialogOpenedEventHandler"
@@ -88,28 +90,22 @@
                                 </Button>
                             </StackPanel>
                             <materialDesign:DialogHost.DialogContent>
-                                <Grid Margin="-1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                        <Calendar
-                                        x:Name="CombinedCalendarFrom"
-                                        Margin="-1 -4 -1 0"
-                                        />
-                                        <materialDesign:Clock
-                                        x:Name="CombinedClockFrom"
-                                        DisplayAutomation="CycleWithSeconds"
-                                        Is24Hours="True"
-                                        />
-                                    </StackPanel>
-                                    <StackPanel Grid.Row="1" Margin="8" HorizontalAlignment="Right" Orientation="Horizontal">
-                                        <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="0" Style="{DynamicResource MaterialDesignFlatButton}" Content="CANCEL"/>
-                                        <Button Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="1" Style="{DynamicResource MaterialDesignFlatButton}" Content="OK"/>
-                                    </StackPanel>
+                                <Grid Margin="0">
+                                    <scheduler:Calendar Margin="5,5,5,5" AddAppointment="Calendar_AddAppointment" Appointments="{Binding Path=Appointments, Mode=TwoWay}" >
+                                    </scheduler:Calendar>
                                 </Grid>
                             </materialDesign:DialogHost.DialogContent>
+                        </materialDesign:DialogHost>-->
+                        <materialDesign:DialogHost HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           IsOpen="{Binding IsSchedulerDialogOpen}"
+                                           DialogContent="{Binding SchedulerContent}"
+                                           CloseOnClickAway="True">
+                            <Border BorderThickness="1" BorderBrush="{DynamicResource PrimaryHueMidBrush}"
+                            MinWidth="256" MinHeight="256" ClipToBounds="True">
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Command="{Binding OpenSchedulerDialogCommand}"
+                                >RUN</Button>
+                            </Border>
                         </materialDesign:DialogHost>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="0"

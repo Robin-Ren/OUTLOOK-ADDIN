@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--
     This section defines project-level properties.
@@ -31,16 +30,17 @@
     <DefineConstants>VSTO40</DefineConstants>
     <IsWebBootstrapper>False</IsWebBootstrapper>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.76</ApplicationVersion>
+    <ApplicationVersion>1.0.0.3</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
-    <ProductName>OutlookAddIn</ProductName>
+    <ProductName>OutlookAddInRobin</ProductName>
     <PublisherName />
     <SupportUrl />
     <FriendlyName>OutlookAddIn</FriendlyName>
@@ -48,25 +48,10 @@
     <LoadBehavior>3</LoadBehavior>
   </PropertyGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.6.1 %28x86 和 x64%29</ProductName>
       <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.1">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.1 %28x86 和 x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
@@ -76,11 +61,6 @@
     <BootstrapperPackage Include="Microsoft.VSTORuntime.4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft Visual Studio 2010 Tools for Office Runtime %28x86 和 x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
@@ -146,8 +126,9 @@
   -->
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\packages\AvalonEdit\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -155,11 +136,13 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero2" />
-    <Reference Include="ShowMeTheXAML">
-      <HintPath>..\packages\ShowMeTheXAML\lib\net45\ShowMeTheXAML.dll</HintPath>
+    <Reference Include="ShowMeTheXAML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ShowMeTheXAML.dll</HintPath>
     </Reference>
-    <Reference Include="ShowMeTheXAML.AvalonEdit">
-      <HintPath>..\packages\ShowMeTheXAML.AvalonEdit\lib\net45\ShowMeTheXAML.AvalonEdit.dll</HintPath>
+    <Reference Include="ShowMeTheXAML.AvalonEdit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Assemblies\ShowMeTheXAML.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -213,17 +196,29 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="CustomScheduler\AddAppointmentWindow.xaml.cs">
+      <DependentUpon>AddAppointmentWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomScheduler\Controls\Calendar.cs" />
+    <Compile Include="CustomScheduler\Controls\CalendarAppointmentItem.cs" />
+    <Compile Include="CustomScheduler\Controls\CalendarDay.cs" />
+    <Compile Include="CustomScheduler\Controls\CalendarLedger.cs" />
+    <Compile Include="CustomScheduler\Controls\CalendarLedgerItem.cs" />
+    <Compile Include="CustomScheduler\Controls\CalendarTimeslotItem.cs" />
+    <Compile Include="CustomScheduler\Controls\CurrentWeek.cs" />
+    <Compile Include="CustomScheduler\Controls\Filters.cs" />
+    <Compile Include="CustomScheduler\Controls\TimeslotPanel.cs" />
+    <Compile Include="CustomScheduler\Model\Appointment.cs" />
+    <Compile Include="CustomScheduler\Model\Appointments.cs" />
+    <Compile Include="CustomScheduler\Model\BindableObject.cs" />
+    <Compile Include="CustomScheduler\Model\DependencyObjectExtensions.cs" />
     <Compile Include="Domain\ABaseViewModel.cs" />
     <Compile Include="Domain\ApplicationConstants.cs" />
     <Compile Include="Domain\MessageBoxCloser.cs" />
     <Compile Include="Domain\ObservableCollectionWrapper.cs" />
     <Compile Include="Domain\RelayCommand.cs" />
     <Compile Include="Domain\DemoItem.cs" />
-    <Compile Include="Domain\DialogsViewModel.cs" />
     <Compile Include="Domain\DocumentationLink.cs" />
-    <Compile Include="Domain\DocumentationLinks.xaml.cs">
-      <DependentUpon>DocumentationLinks.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Domain\DocumentationLinkType.cs" />
     <Compile Include="Domain\FutureDateValidationRule.cs" />
     <Compile Include="Domain\IsCheckedValidationRule.cs" />
@@ -231,34 +226,34 @@
     <Compile Include="Domain\MainWindowViewModel.cs" />
     <Compile Include="Domain\NotEmptyValidationRule.cs" />
     <Compile Include="Domain\NotifyPropertyChangedExtension.cs" />
-    <Compile Include="Domain\Sample4Dialog.xaml.cs">
-      <DependentUpon>Sample4Dialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Domain\SampleDialog.xaml.cs">
-      <DependentUpon>SampleDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Domain\SampleDialogViewModel.cs" />
-    <Compile Include="Domain\SampleMessageDialog.xaml.cs">
-      <DependentUpon>SampleMessageDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Domain\SampleProgressDialog.xaml.cs">
-      <DependentUpon>SampleProgressDialog.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Domain\Room.cs" />
+    <Compile Include="Domain\BookingsViewModel.cs" />
+    <Compile Include="Domain\RoomsViewModel.cs" />
     <Compile Include="Domain\SelectableViewModel.cs" />
     <Compile Include="Domain\SimpleDataTemplateSelector.cs" />
     <Compile Include="Domain\SimpleDateValidationRule.cs" />
     <Compile Include="Domain\TextFieldsViewModel.cs" />
     <Compile Include="Domain\TreesViewModel.cs" />
     <Compile Include="Domain\MeetingAddinViewModel.cs" />
+    <Compile Include="Domain\ViewModelExtensions.cs" />
     <Compile Include="Domain\WindowDialogService.cs" />
     <Compile Include="Domain\WindowDialogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Views\Scheduler.xaml.cs">
+      <DependentUpon>Scheduler.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EmptyWindow.xaml.cs">
       <DependentUpon>EmptyWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WpfUserControl.xaml.cs">
+    <Compile Include="Views\RoomsControl.xaml.cs">
+      <DependentUpon>RoomsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BookingsControl.xaml.cs">
+      <DependentUpon>BookingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WpfUserControl.xaml.cs">
       <DependentUpon>WpfUserControl.xaml</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Properties\Licenses.licx" />
@@ -275,9 +270,10 @@
     <EmbeddedResource Include="ManageTaskPaneRibbon.resx">
       <DependentUpon>ManageTaskPaneRibbon.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TaskPaneControl.resx">
+    <EmbeddedResource Include="Views\TaskPaneControl.resx">
       <DependentUpon>TaskPaneControl.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="CustomScheduler\Model\Model.cd" />
     <None Include="OutlookAddIn1_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -294,10 +290,10 @@
     <Compile Include="ManageTaskPaneRibbon.Designer.cs">
       <DependentUpon>ManageTaskPaneRibbon.cs</DependentUpon>
     </Compile>
-    <Compile Include="TaskPaneControl.cs">
+    <Compile Include="Views\TaskPaneControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TaskPaneControl.Designer.cs">
+    <Compile Include="Views\TaskPaneControl.Designer.cs">
       <DependentUpon>TaskPaneControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ThisAddIn.cs">
@@ -312,31 +308,31 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Domain\DocumentationLinks.xaml">
+    <Page Include="CustomScheduler\AddAppointmentWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Domain\Sample4Dialog.xaml">
+    <Page Include="CustomScheduler\Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Domain\SampleDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\Scheduler.xaml">
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Domain\SampleMessageDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Domain\SampleProgressDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\EmptyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WpfUserControl.xaml">
+    <Page Include="Views\RoomsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BookingsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WpfUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -356,7 +352,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="icons8-elephant-circus-96.png" />
+    <Resource Include="CustomScheduler\Images\Next.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="CustomScheduler\Images\Previous.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RibbonIcon.png" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OutlookAddIn.Domain
 {
-    public sealed class ObservableCollectionWrapper<T> : ObservableCollection<T>
+    public class ObservableCollectionWrapper<T> : ObservableCollection<T>
         where T : INotifyPropertyChanged
     {
         public ObservableCollectionWrapper()

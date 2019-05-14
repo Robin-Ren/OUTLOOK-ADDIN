@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="OutlookAddIn.BookingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
+             xmlns:viewModel="clr-namespace:OutlookAddIn.Domain"
+             xmlns:view="clr-namespace:OutlookAddIn"
+             mc:Ignorable="d" 
+             xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="16"
+             TextOptions.TextFormattingMode="Ideal" 
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             Height="471">
+    <UserControl.DataContext>
+        <viewModel:BookingsViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Font.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Brown.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.DeepPurple.Primary.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/ShowMeTheXAML.AvalonEdit;component/Themes/xamldisplayer.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Slider.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Calendar.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/OutlookAddIn;component/CustomScheduler/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Color x:Key="Primary500Foreground">#DDFFFFFF</Color>
+            <Color x:Key="Primary400">#8d6e63</Color>
+            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" po:Freeze="True" />
+            <SolidColorBrush x:Key="Primary400Brush" Color="{StaticResource Primary400}" po:Freeze="True" />
+            <!--DataTemplates--><!--
+            <DataTemplate DataType="{x:Type viewModel:RoomsViewModel}">
+                <view:RoomsControl />
+            </DataTemplate>-->
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <AdornerDecorator>
+        <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+            <!--<Button DockPanel.Dock="Top"
+                    HorizontalContentAlignment="Right"
+                                VerticalAlignment="Center"
+                                Command="{Binding Path=OpenNewBookingRoomsDialogCommand}"
+                                Margin="0"
+                                FontWeight="Bold"
+                                >New Booking +</Button>-->
+            <materialDesign:ColorZone DockPanel.Dock="Top" Mode="PrimaryMid" Padding="6" Width="450">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}"
+                            Command="{Binding Path=OpenNewBookingRoomsDialogCommand}"
+                            HorizontalAlignment="Right">
+                        <materialDesign:PackIcon Kind="Plus" HorizontalAlignment="Right" />
+                    </Button>
+                    <TextBlock Margin="0" Text="New Booking" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               FontWeight="Bold" FontSize="18"/>
+                </DockPanel>
+            </materialDesign:ColorZone>
+            <ListView DockPanel.Dock="Top" Margin="0" Name="lvDataBinding"
+                          ItemsSource="{Binding Appointments}"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                              MaxHeight="500px">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <materialDesign:Card Background="White"
+                      Foreground="{StaticResource Primary400Brush}"
+                                                 Width="440"
+                      Padding="0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Margin="0 4 0 0 " FontWeight="Bold" Text="{Binding Subject}" FontSize="16" VerticalAlignment="Center" />
+                                        <!--<Button Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                HorizontalAlignment="Right">
+                                            <materialDesign:PackIcon Kind="ArrowRight" HorizontalAlignment="Right" />
+                                        </Button>-->
+                                    </StackPanel>
+                                    <Separator Grid.Row="1" Style="{StaticResource MaterialDesignDarkSeparator}"/>
+                                    <StackPanel Grid.Row="2" Margin="5" >
+                                        <TextBlock Text="{Binding DateFormatted, StringFormat=Date: {0}}" FontSize="15"/>
+                                        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding TimeSlot, StringFormat=Time slot: {0}}" FontSize="15"/>
+                                    </StackPanel>
+                                </Grid>
+                            </materialDesign:Card>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+    </AdornerDecorator>
+</UserControl>
+

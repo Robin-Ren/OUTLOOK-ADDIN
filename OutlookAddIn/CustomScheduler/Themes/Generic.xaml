@@ -1,0 +1,322 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customScheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
+    xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    >
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Font.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Brown.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.DeepPurple.Primary.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/ShowMeTheXAML.AvalonEdit;component/Themes/xamldisplayer.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Slider.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Calendar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <Color x:Key="Primary500Foreground">#DDFFFFFF</Color>
+    <Color x:Key="Primary400">#8d6e63</Color>
+    <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" po:Freeze="True" />
+    <SolidColorBrush x:Key="Primary400Brush" Color="{StaticResource Primary400}" po:Freeze="True" />
+
+    <ContextMenu x:Key="ctxmnu">
+        <MenuItem Header="Add Appointment"
+                  Command="{Binding
+                  PlacementTarget.Tag.DataContext.CopyErrorMessageCommand,
+                  RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                  CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget}" />
+    </ContextMenu>
+
+    <Style TargetType="{x:Type customScheduler:CalendarTimeslotItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customScheduler:CalendarTimeslotItem}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="#373839"
+                            BorderThickness="0,0.5,0,0"
+                            x:Name="bd"
+                            Height="22">
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1" TargetName="bd" />
+                        </Trigger>
+                        <Trigger Property="Button.IsDefaulted" Value="True">
+                            <Setter Property="BorderBrush" TargetName="bd" Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="bd" Value="#FFC4E5F6"/>
+                            <Setter Property="BorderBrush" TargetName="bd" Value="#FF2C628B"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" TargetName="bd" Value="#CE881B"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" TargetName="bd" Value="#FFF4F4F4"/>
+                            <Setter Property="BorderBrush" TargetName="bd" Value="#FFADB2B5"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#CE881B"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type customScheduler:CalendarLedgerItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customScheduler:CalendarLedgerItem}">
+                    <Border Background="#373839"
+                            BorderBrush="#CE881B"
+                            BorderThickness="0,0,1,1"
+                            Height="44" Width="50">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="{TemplateBinding TimeslotA}" Foreground="White" FontSize="16" Margin="0,3,0,0" FontWeight="Bold"/>
+                            <TextBlock Text="{TemplateBinding TimeslotB}" Foreground="White"  Margin="1.5,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type customScheduler:CalendarDay}">
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <customScheduler:TimeslotPanel />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customScheduler:CalendarDay}">
+                    <Border Background="#CE881B"
+                            BorderBrush="#CE881B"
+                            BorderThickness="1">
+                        <Grid>
+                            <StackPanel>
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="00:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="00:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="01:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="01:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="02:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="02:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="03:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="03:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="04:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="04:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="05:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="05:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="06:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="06:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="07:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="07:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="08:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="08:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="09:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="09:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="10:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="10:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="11:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="11:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="12:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="12:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="13:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="13:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="14:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="14:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="15:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="15:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="16:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="16:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="17:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="17:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="White" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="18:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="18:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="19:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="19:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="20:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="20:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="21:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="21:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="22:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="22:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="23:00" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                                <customScheduler:CalendarTimeslotItem TimeslotStart="23:30" TimeslotDate="{Binding RelativeSource={RelativeSource AncestorType=customScheduler:CalendarDay}, Path=Day}" Background="#F2F2F2" />
+                            </StackPanel>
+                            <ItemsPresenter />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type customScheduler:CalendarLedger}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customScheduler:CalendarLedger}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <StackPanel>
+                            <customScheduler:CalendarLedgerItem TimeslotA="12" TimeslotB="am" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="1" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="2" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="3" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="4" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="5" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="6" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="7" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="8" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="9" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="10" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="11" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="12" TimeslotB="pm" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="1" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="2" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="3" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="4" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="5" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="6" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="7" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="8" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="9" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="10" TimeslotB="00" />
+                            <customScheduler:CalendarLedgerItem TimeslotA="11" TimeslotB="00" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type customScheduler:Calendar}">
+        <Setter Property="ContextMenu" Value="{StaticResource ctxmnu}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customScheduler:Calendar}">
+                    <Border Background="#373839"
+                            BorderBrush="White"
+                            BorderThickness="2,2,2,2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="38" />
+                                <RowDefinition Height="22" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,0,0,0">
+                                <Button DockPanel.Dock="Left"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                        Foreground="White"
+                            Command="{x:Static customScheduler:Calendar.PreviousDay}"
+                            HorizontalAlignment="Right">
+                                    <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Left"  />
+                                </Button>
+
+                                <Button DockPanel.Dock="Left"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                        Foreground="White"
+                            Command="{x:Static customScheduler:Calendar.NextDay}"
+                            HorizontalAlignment="Right">
+                                    <materialDesign:PackIcon Kind="ArrowRight" HorizontalAlignment="Right" />
+                                </Button>
+
+                                <Button DockPanel.Dock="Right"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}"
+                                        Foreground="White"
+                            Command="{x:Static customScheduler:Calendar.CloseDialog}"
+                            HorizontalAlignment="Right">
+                                    <materialDesign:PackIcon Kind="Close" HorizontalAlignment="Right" />
+                                </Button>
+                            </StackPanel>
+                            <Border BorderBrush="#CE881B" BorderThickness="0,0,1,1" Grid.Column="0" Grid.Row="1" />
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="1" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader1" FontWeight="Bold" />
+                            </Border>
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="2" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader2" FontWeight="Bold"/>
+                            </Border>
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="3" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader3" FontWeight="Bold"/>
+                            </Border>
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="4" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader4" FontWeight="Bold"/>
+                            </Border>
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="5" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader5" FontWeight="Bold"/>
+                            </Border>
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="6" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader6" FontWeight="Bold"/>
+                            </Border>
+                            <Border BorderBrush="#CE881B" BorderThickness="1,1,1,1" Background="White" Grid.Column="7" Grid.Row="1">
+                                <TextBlock Text="{TemplateBinding CurrentDate}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="dayHeader7" FontWeight="Bold"/>
+                            </Border>
+                            <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="120" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <customScheduler:CalendarLedger Grid.Column="0" />
+                                    <customScheduler:CalendarDay Grid.Column="1" x:Name="day1" BorderBrush="White" Day="{Binding Day}" BorderThickness="1,1,1,1"/>
+                                    <customScheduler:CalendarDay Grid.Column="2" x:Name="day2" BorderBrush="White" BorderThickness="1,1,1,1"/>
+                                    <customScheduler:CalendarDay Grid.Column="3" x:Name="day3" BorderBrush="White" BorderThickness="1,1,1,1"/>
+                                    <customScheduler:CalendarDay Grid.Column="4" x:Name="day4" BorderBrush="White" BorderThickness="1,1,1,1"/>
+                                    <customScheduler:CalendarDay Grid.Column="5" x:Name="day5" BorderBrush="White" BorderThickness="1,1,1,1"/>
+                                    <customScheduler:CalendarDay Grid.Column="6" x:Name="day6" BorderBrush="White" BorderThickness="1,1,1,1"/>
+                                    <customScheduler:CalendarDay Grid.Column="7" x:Name="day7" BorderBrush="White" BorderThickness="1,1,1,1"/>
+                                </Grid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type customScheduler:CalendarAppointmentItem}">
+        <Setter Property="StartTime" Value="{Binding StartTime}" />
+        <Setter Property="EndTime" Value="{Binding EndTime}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type customScheduler:CalendarAppointmentItem}">
+                    <Border CornerRadius="2" BorderThickness="1,1,1,1" BorderBrush="#373839" Background="#EACF88" Margin="1,1,1,1" Padding="3,1.5,0,1.5">
+                        <Border.Effect>
+                            <DropShadowEffect Opacity="0.5" />
+                        </Border.Effect>
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

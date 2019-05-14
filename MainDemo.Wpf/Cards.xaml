@@ -137,7 +137,7 @@
                         <TextBlock Grid.Row="2" Margin="16 0 16 8" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="16 0 16 8" HorizontalAlignment="Right">
                             <Button HorizontalAlignment="Right" Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0"
-                                materialDesign:RippleAssist.IsCentered="True">
+                                materialDesign:RippleAssist.IsCentered="True" VerticalAlignment="Top">
                                 <materialDesign:PackIcon Kind="Phone" />
                             </Button>
                             <materialDesign:PopupBox HorizontalAlignment="Right" Style="{StaticResource MaterialDesignToolForegroundPopupBox}" Padding="2 0 2 0">
