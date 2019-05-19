@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using OutlookAddIn.CustomScheduler.Model;
 
 namespace OutlookAddIn.Domain
 {
@@ -17,6 +18,7 @@ namespace OutlookAddIn.Domain
             OpenSchedulerDialogCommand = new RelayCommand(OpenSchedulerDialog);
             AcceptSchedulerDialogCommand = new RelayCommand(AcceptSchedulerDialog);
             CancelSchedulerDialogCommand = new RelayCommand(CancelSchedulerDialog);
+            AddAppointmentCommand = new RelayCommand(CancelSchedulerDialog);
         }
 
         #region Properties
@@ -74,6 +76,19 @@ namespace OutlookAddIn.Domain
         {
             NagigateToBookings?.Invoke(this, new EventArgs());
         }
+
+        /// <summary>
+        /// Raised Add new appointment button is pressed.
+        /// </summary>
+        public static event EventHandler AddAppointmentEventHandler;
+
+        /// <summary>
+        /// Raises the NagigateToBookings event
+        /// </summary>
+        protected void OnAddAppointment()
+        {
+            AddAppointmentEventHandler?.Invoke(this, new EventArgs());
+        }
         #endregion
 
         #region Commands
@@ -81,6 +96,7 @@ namespace OutlookAddIn.Domain
         public ICommand OpenSchedulerDialogCommand { get; }
         public ICommand AcceptSchedulerDialogCommand { get; }
         public ICommand CancelSchedulerDialogCommand { get; }
+        public ICommand AddAppointmentCommand { get; set; }
         #endregion
 
         #region Command Implementations
@@ -92,7 +108,8 @@ namespace OutlookAddIn.Domain
 
         private void OpenSchedulerDialog(object obj)
         {
-            SchedulerContent = new Scheduler();
+            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(new Appointments());
+            SchedulerContent = new SchedulerControl(schedulerViewModel);
             IsSchedulerDialogOpen = true;
         }
 
@@ -104,6 +121,11 @@ namespace OutlookAddIn.Domain
         private void AcceptSchedulerDialog(object obj)
         {
 
+        }
+
+        private void AddAppointment(object obj)
+        {
+            OnAddAppointment();
         }
         #endregion
     }

@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="BindableObject.cs" company="Impilo Software">
-//     Copyright © Impilo Software. All rights reserved.
+// <copyright file="BindableObject.cs" company="Sofly">
+//     Copyright © Sofly. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
@@ -125,10 +125,6 @@ namespace OutlookAddIn.CustomScheduler.Model
         [Conditional("DEBUG")]
         private void VerifyProperty(string propertyName)
         {
-            // Thanks to Rama Krishna Vavilala for the tip to use TypeDescriptor here, instead of manual
-            // reflection, so that custom properties are honored too.
-            // http://www.codeproject.com/KB/WPF/podder1.aspx?msg=2381272#xx2381272xx
-
             bool propertyExists = TypeDescriptor.GetProperties(this).Find(propertyName, false) != null;
             if (!propertyExists)
             {

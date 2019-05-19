@@ -67,7 +67,7 @@ namespace OutlookAddIn.CustomScheduler.Controls
 
         #endregion
 
-        
+
         protected override Size MeasureOverride(Size availableSize)
         {
             // Calculate size based on duration?
@@ -98,10 +98,10 @@ namespace OutlookAddIn.CustomScheduler.Controls
                 double start_offset = (finalSize.Height / (24 * 60)) * start_minutes;
                 double end_offset = (finalSize.Height / (24 * 60)) * end_minutes;
 
-                top = start_offset+1;
+                top = start_offset + 1;
 
                 width = finalSize.Width - 2;
-                height = (end_offset - start_offset)-2;
+                height = (end_offset - start_offset) - 2;
 
                 element.Arrange(new Rect(left, top, width, height));
             }

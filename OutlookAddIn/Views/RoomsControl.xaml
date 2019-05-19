@@ -45,22 +45,23 @@
     </UserControl.Resources>
     <AdornerDecorator>
         <DockPanel DockPanel.Dock="Top">
-            <materialDesign:ColorZone DockPanel.Dock="Top" Mode="PrimaryMid" Padding="6" Width="450">
-                <DockPanel>
-                    <Button DockPanel.Dock="Left"
-                            Style="{StaticResource MaterialDesignToolForegroundButton}"
+            <materialDesign:ColorZone DockPanel.Dock="Top" Mode="PrimaryMid" Padding="0 6 0 6"
+                                      materialDesign:ShadowAssist.ShadowDepth="Depth3">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
                             Command="{Binding Path=NagigateToBookingsDialogCommand}"
                             HorizontalAlignment="Right">
                         <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Left" />
                     </Button>
                     <TextBlock Margin="0" Text="Facility Booking" HorizontalAlignment="Center" VerticalAlignment="Center"
                                FontWeight="Bold" FontSize="18"/>
-                </DockPanel>
+                </StackPanel>
             </materialDesign:ColorZone>
-            <ListView Margin="0" Name="lvRooms"
-                          ItemsSource="{Binding AvailableRooms}"
-                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                              MaxHeight="500px"
+            <ListView  DockPanel.Dock="Top"
+                       Margin="0" Name="lvRooms" MaxHeight="500px"
+                       ItemsSource="{Binding AvailableRooms}"
+                       ScrollViewer.VerticalScrollBarVisibility="Hidden"
                        SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -88,11 +89,6 @@
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                <!--<ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_PreviewMouseLeftButtonDown" />
-                    </Style>
-                </ListView.ItemContainerStyle>-->
             </ListView>
         </DockPanel>
     </AdornerDecorator>

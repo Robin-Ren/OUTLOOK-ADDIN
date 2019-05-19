@@ -12,21 +12,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using OutlookAddIn.CustomScheduler.Model;
 
-namespace OutlookAddIn.CustomScheduler
+namespace OutlookAddIn
 {
     /// <summary>
     /// Interaction logic for AddAppointmentWindow.xaml
     /// </summary>
-    public partial class AddAppointmentWindow : Window
+    public partial class AppointmentDetailsControl : UserControl
     {
-        public AddAppointmentWindow()
+        public AppointmentDetailsControl()
         {
             InitializeComponent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Close();
         }
     }
 }

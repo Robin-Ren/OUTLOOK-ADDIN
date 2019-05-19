@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="OutlookAddIn.Scheduler"
+﻿<UserControl x:Class="OutlookAddIn.SchedulerControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -34,7 +34,7 @@
             <SolidColorBrush x:Key="Primary400Brush" Color="{StaticResource Primary400}" po:Freeze="True" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <scheduler:Calendar Grid.Row="1" Margin="5,5,5,5" AddAppointment="Calendar_AddAppointment" Appointments="{Binding}" >
+
+    <scheduler:Calendar Grid.Row="1" Margin="5,5,5,5" AddAppointment="Calendar_AddAppointment" Appointments="{Binding Path=Appointments}" >
     </scheduler:Calendar>
 </UserControl>

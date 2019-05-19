@@ -25,11 +25,11 @@ using Word = Microsoft.Office.Interop.Word;
 namespace OutlookAddIn
 {
     /// <summary>
-    /// WpfUserControl.xaml
+    /// BookingsControl.xaml
     /// </summary>
-    public partial class WpfUserControl : UserControl
+    public partial class LoginControl : UserControl
     {
-        public WpfUserControl()
+        public LoginControl()
         {
             InitializeComponent();
         }
@@ -37,11 +37,6 @@ namespace OutlookAddIn
         private void CanOpenDialog(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
-        }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            SetCurrentValue(CustomScheduler.Controls.Calendar.AppointmentsProperty, new Appointments());
         }
     }
 }

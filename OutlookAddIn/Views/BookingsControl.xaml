@@ -17,7 +17,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             Height="471">
+             >
     <UserControl.DataContext>
         <viewModel:BookingsViewModel />
     </UserControl.DataContext>
@@ -46,7 +46,8 @@
             <Color x:Key="Primary400">#8d6e63</Color>
             <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" po:Freeze="True" />
             <SolidColorBrush x:Key="Primary400Brush" Color="{StaticResource Primary400}" po:Freeze="True" />
-            <!--DataTemplates--><!--
+            <!--DataTemplates-->
+            <!--
             <DataTemplate DataType="{x:Type viewModel:RoomsViewModel}">
                 <view:RoomsControl />
             </DataTemplate>-->
@@ -61,28 +62,31 @@
                                 Margin="0"
                                 FontWeight="Bold"
                                 >New Booking +</Button>-->
-            <materialDesign:ColorZone DockPanel.Dock="Top" Mode="PrimaryMid" Padding="6" Width="450">
-                <DockPanel>
-                    <Button DockPanel.Dock="Right"
-                            Style="{StaticResource MaterialDesignToolForegroundButton}"
+            <materialDesign:ColorZone
+                DockPanel.Dock="Top" Mode="PrimaryMid"
+                Padding="0 6 0 6"
+                materialDesign:ShadowAssist.ShadowDepth="Depth3">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Margin="0" Text="New Booking" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               FontWeight="Bold" FontSize="18"/>
+                    <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
                             Command="{Binding Path=OpenNewBookingRoomsDialogCommand}"
                             HorizontalAlignment="Right">
                         <materialDesign:PackIcon Kind="Plus" HorizontalAlignment="Right" />
                     </Button>
-                    <TextBlock Margin="0" Text="New Booking" HorizontalAlignment="Center" VerticalAlignment="Center"
-                               FontWeight="Bold" FontSize="18"/>
-                </DockPanel>
+                </StackPanel>
             </materialDesign:ColorZone>
             <ListView DockPanel.Dock="Top" Margin="0" Name="lvDataBinding"
                           ItemsSource="{Binding Appointments}"
-                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                              MaxHeight="500px">
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <!--MaxHeight="500px"-->
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
                             <materialDesign:Card Background="White"
                       Foreground="{StaticResource Primary400Brush}"
-                                                 Width="440"
+                                                 Width="430"
                       Padding="0">
                                 <Grid>
                                     <Grid.RowDefinitions>

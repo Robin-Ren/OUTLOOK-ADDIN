@@ -14,22 +14,21 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OutlookAddIn.CustomScheduler;
 using OutlookAddIn.CustomScheduler.Model;
+using OutlookAddIn.Domain;
 
 namespace OutlookAddIn
 {
     /// <summary>
-    /// Scheduler.xaml 的交互逻辑
+    /// Scheduler.xaml
     /// </summary>
-    public partial class Scheduler : UserControl
+    public partial class SchedulerControl : UserControl
     {
-        private Appointments appointments = new Appointments();
-
-        public Scheduler()
+        public SchedulerControl(SchedulerViewModel schedulerViewModel)
         {
             InitializeComponent();
             ApplyTemplate();
 
-            DataContext = appointments;
+            DataContext = schedulerViewModel;
         }
 
         private void Calendar_AddAppointment(object sender, RoutedEventArgs e)
@@ -39,11 +38,7 @@ namespace OutlookAddIn
             appointment.StartTime = new DateTime(2008, 10, 22, 16, 00, 00);
             appointment.EndTime = new DateTime(2008, 10, 22, 17, 00, 00);
 
-            AddAppointmentWindow aaw = new AddAppointmentWindow();
-            aaw.DataContext = appointment;
-            aaw.ShowDialog();
-
-            appointments.Add(appointment);
+            ((SchedulerViewModel)DataContext).Appointments.Add(appointment);
         }
 
         private void Child_Close(object sender, System.Windows.RoutedEventArgs e)

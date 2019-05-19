@@ -35,12 +35,12 @@
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.3</ApplicationVersion>
+    <ApplicationVersion>1.0.0.33</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
-    <ProductName>OutlookAddInRobin</ProductName>
+    <ProductName>OutlookAddIn</ProductName>
     <PublisherName />
     <SupportUrl />
     <FriendlyName>OutlookAddIn</FriendlyName>
@@ -196,8 +196,11 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="CustomScheduler\AddAppointmentWindow.xaml.cs">
-      <DependentUpon>AddAppointmentWindow.xaml</DependentUpon>
+    <Compile Include="Domain\AppointmentViewModel.cs" />
+    <Compile Include="Domain\SchedulerViewModel.cs" />
+    <Compile Include="CustomScheduler\Controls\ValueConverters.cs" />
+    <Compile Include="Views\AppointmentDetails.xaml.cs">
+      <DependentUpon>AppointmentDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomScheduler\Controls\Calendar.cs" />
     <Compile Include="CustomScheduler\Controls\CalendarAppointmentItem.cs" />
@@ -214,32 +217,26 @@
     <Compile Include="CustomScheduler\Model\DependencyObjectExtensions.cs" />
     <Compile Include="Domain\ABaseViewModel.cs" />
     <Compile Include="Domain\ApplicationConstants.cs" />
+    <Compile Include="Domain\LoginViewModel.cs" />
     <Compile Include="Domain\MessageBoxCloser.cs" />
     <Compile Include="Domain\ObservableCollectionWrapper.cs" />
     <Compile Include="Domain\RelayCommand.cs" />
-    <Compile Include="Domain\DemoItem.cs" />
-    <Compile Include="Domain\DocumentationLink.cs" />
-    <Compile Include="Domain\DocumentationLinkType.cs" />
-    <Compile Include="Domain\FutureDateValidationRule.cs" />
     <Compile Include="Domain\IsCheckedValidationRule.cs" />
-    <Compile Include="Domain\ListsAndGridsViewModel.cs" />
-    <Compile Include="Domain\MainWindowViewModel.cs" />
     <Compile Include="Domain\NotEmptyValidationRule.cs" />
     <Compile Include="Domain\NotifyPropertyChangedExtension.cs" />
     <Compile Include="Domain\Room.cs" />
     <Compile Include="Domain\BookingsViewModel.cs" />
     <Compile Include="Domain\RoomsViewModel.cs" />
     <Compile Include="Domain\SelectableViewModel.cs" />
-    <Compile Include="Domain\SimpleDataTemplateSelector.cs" />
-    <Compile Include="Domain\SimpleDateValidationRule.cs" />
-    <Compile Include="Domain\TextFieldsViewModel.cs" />
-    <Compile Include="Domain\TreesViewModel.cs" />
     <Compile Include="Domain\MeetingAddinViewModel.cs" />
     <Compile Include="Domain\ViewModelExtensions.cs" />
     <Compile Include="Domain\WindowDialogService.cs" />
     <Compile Include="Domain\WindowDialogViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\LoginControl.xaml.cs">
+      <DependentUpon>LoginControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Scheduler.xaml.cs">
       <DependentUpon>Scheduler.xaml</DependentUpon>
@@ -308,11 +305,15 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="CustomScheduler\AddAppointmentWindow.xaml">
+    <Page Include="Views\AppointmentDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomScheduler\Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LoginControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -352,15 +353,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="CustomScheduler\Images\Next.png">
+    <Resource Include="Images\Next.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="CustomScheduler\Images\Previous.png">
+    <Resource Include="Images\Previous.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RibbonIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\HeaderImage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LoginBg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

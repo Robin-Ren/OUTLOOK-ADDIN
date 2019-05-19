@@ -31,6 +31,7 @@ namespace OutlookAddIn.Domain
         private ABaseViewModel _currentViewModel;
 
         private static BookingsViewModel _bookingViewModel;
+        private static LoginViewModel _loginViewModel;
         #endregion
 
         #region Public Properties
@@ -149,10 +150,16 @@ namespace OutlookAddIn.Domain
             DateEnd = DateTime.Now;
             SelectedMeetingRoom = null;
 
-            // Initialize booking view model
-            if (_bookingViewModel == null)
+            //// Initialize booking view model
+            //if (_bookingViewModel == null)
+            //{
+            //    InitializeBookingsViewModel(null, null);
+            //}
+
+            // Initialize login view model
+            if (_loginViewModel == null)
             {
-                InitializeBookingsViewModel(null, null);
+                InitializeLoginViewModel(null, null);
             }
 
             AvailableMeetingRooms = new List<string>
@@ -184,6 +191,17 @@ namespace OutlookAddIn.Domain
             _bookingViewModel.ClearEventInvocations("OpenNewBookingRooms");
             BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
             CurrentViewModel = _bookingViewModel;
+        }
+
+        /// <summary>
+        /// Initialize Login view model object
+        /// </summary>
+        private void InitializeLoginViewModel(object sender, EventArgs e)
+        {
+            _loginViewModel = new LoginViewModel();
+            _loginViewModel.ClearEventInvocations("DoLogin");
+            LoginViewModel.DoLogin += new LoginEventHandler(OnDoLogin);
+            CurrentViewModel = _loginViewModel;
         }
 
         #region Command Implementations
@@ -273,6 +291,15 @@ namespace OutlookAddIn.Domain
 
             // Set the rooms as the current view model
             CurrentViewModel = roomsModel;
+        }
+
+        private void OnDoLogin(object sender, EventArgs e)
+        {
+            // Initialize booking view model
+            if (_bookingViewModel == null)
+            {
+                InitializeBookingsViewModel(null, null);
+            }
         }
         #endregion Command Implementations
 
