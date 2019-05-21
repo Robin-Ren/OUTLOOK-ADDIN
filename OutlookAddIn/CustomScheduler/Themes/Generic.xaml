@@ -30,7 +30,7 @@
     <ContextMenu x:Key="ctxmnu">
         <MenuItem Header="Add Appointment"
                   Command="{Binding
-                  PlacementTarget.Tag.DataContext.NagigateToBookingsDialogCommand,
+                  DataContext.OpenAddAppointmentDialogCommand,
                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget}" />
     </ContextMenu>

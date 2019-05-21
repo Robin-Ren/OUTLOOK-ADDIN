@@ -14,7 +14,7 @@ namespace OutlookAddIn.Domain
         {
             Appointments = appointments;
 
-            AddAppointmentCommand = new RelayCommand(AddAppointment);
+            OpenAddAppointmentDialogCommand = new RelayCommand(OpenAddAppointmentDialog);
         }
 
         #region Properties
@@ -36,27 +36,27 @@ namespace OutlookAddIn.Domain
         /// <summary>
         /// Raised Add new appointment button is pressed.
         /// </summary>
-        public static event EventHandler AddAppointmentEventHandler;
+        public static event EventHandler OpenAddAppointmentDialogEventHandler;
 
         /// <summary>
         /// Raises the NagigateToBookings event
         /// </summary>
-        protected void OnAddAppointment()
+        protected void OnOpenAddAppointmentDialog()
         {
-            AddAppointmentEventHandler?.Invoke(this, new EventArgs());
+            OpenAddAppointmentDialogEventHandler?.Invoke(this, new EventArgs());
         }
         #endregion
 
         #region Commands
-        public ICommand AddAppointmentCommand { get; set; }
+        public ICommand OpenAddAppointmentDialogCommand { get; set; }
 
         #endregion
 
         #region Command Implementations
 
-        private void AddAppointment(object obj)
+        private void OpenAddAppointmentDialog(object obj)
         {
-            OnAddAppointment();
+            OnOpenAddAppointmentDialog();
         }
         #endregion
     }

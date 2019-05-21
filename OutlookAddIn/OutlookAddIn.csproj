@@ -35,7 +35,7 @@
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.33</ApplicationVersion>
+    <ApplicationVersion>1.0.0.44</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>

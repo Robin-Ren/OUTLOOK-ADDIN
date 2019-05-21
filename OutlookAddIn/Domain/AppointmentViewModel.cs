@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 
 namespace OutlookAddIn.Domain
 {
@@ -100,6 +101,58 @@ namespace OutlookAddIn.Domain
         }
         #endregion
 
+        #region Commands
+        public ICommand AddAppointmentCommand { get; set; }
+        public ICommand OpenNewBookingRoomsDialogCommand { get; set; }
+        #endregion
 
+        #region Events
+
+        public AppointmentViewModel()
+        {
+            AddAppointmentCommand = new RelayCommand(OpenAddAppointmentDialog);
+            OpenNewBookingRoomsDialogCommand = new RelayCommand(OpenNewBookingRoomsControl);
+        }
+
+        /// <summary>
+        /// Raised Add new appointment button is pressed.
+        /// </summary>
+        public static event EventHandler AddAppointmentEventHandler;
+
+        /// <summary>
+        /// Raises the NagigateToBookings event
+        /// </summary>
+        protected void OnAddAppointment()
+        {
+            AddAppointmentEventHandler?.Invoke(this, new EventArgs());
+        }
+
+        /// <summary>
+        /// Raised opening new booking rooms button is pressed.
+        /// </summary>
+        public static event OpenNewBookingRoomsEventHandler OpenNewBookingRooms;
+
+        /// <summary>
+        /// Raises the OpenNewBookingRooms event
+        /// </summary>
+        protected void OnOpenNewBookingRooms()
+        {
+            OpenNewBookingRooms?.Invoke(this, new EventArgs());
+        }
+        #endregion
+
+        #region Command Implementations
+        private void OpenAddAppointmentDialog(object obj)
+        {
+            OnAddAppointment();
+
+        }
+
+        private void OpenNewBookingRoomsControl(object obj)
+        {
+            // Just raise the OnOpenNewBookingRooms Event
+            OnOpenNewBookingRooms();
+        }
+        #endregion
     }
 }

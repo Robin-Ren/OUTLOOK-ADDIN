@@ -35,6 +35,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <scheduler:Calendar Grid.Row="1" Margin="5,5,5,5" AddAppointment="Calendar_AddAppointment" Appointments="{Binding Path=Appointments}" >
+    <scheduler:Calendar Grid.Row="1" Margin="5,5,5,5"
+                        AddAppointment="Calendar_AddAppointment"
+                        Appointments="{Binding Path=Appointments}" >
     </scheduler:Calendar>
 </UserControl>

@@ -18,7 +18,6 @@ namespace OutlookAddIn.Domain
             OpenSchedulerDialogCommand = new RelayCommand(OpenSchedulerDialog);
             AcceptSchedulerDialogCommand = new RelayCommand(AcceptSchedulerDialog);
             CancelSchedulerDialogCommand = new RelayCommand(CancelSchedulerDialog);
-            AddAppointmentCommand = new RelayCommand(CancelSchedulerDialog);
         }
 
         #region Properties
@@ -80,14 +79,14 @@ namespace OutlookAddIn.Domain
         /// <summary>
         /// Raised Add new appointment button is pressed.
         /// </summary>
-        public static event EventHandler AddAppointmentEventHandler;
+        public static event EventHandler OpenSchedulerDialogEventHandler;
 
         /// <summary>
-        /// Raises the NagigateToBookings event
+        /// Raises the OpenSchedulerDialogEventHandler event
         /// </summary>
-        protected void OnAddAppointment()
+        protected void OnOpenSchedulerDialog()
         {
-            AddAppointmentEventHandler?.Invoke(this, new EventArgs());
+            OpenSchedulerDialogEventHandler?.Invoke(this, new EventArgs());
         }
         #endregion
 
@@ -96,7 +95,6 @@ namespace OutlookAddIn.Domain
         public ICommand OpenSchedulerDialogCommand { get; }
         public ICommand AcceptSchedulerDialogCommand { get; }
         public ICommand CancelSchedulerDialogCommand { get; }
-        public ICommand AddAppointmentCommand { get; set; }
         #endregion
 
         #region Command Implementations
@@ -108,9 +106,7 @@ namespace OutlookAddIn.Domain
 
         private void OpenSchedulerDialog(object obj)
         {
-            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(new Appointments());
-            SchedulerContent = new SchedulerControl(schedulerViewModel);
-            IsSchedulerDialogOpen = true;
+            OnOpenSchedulerDialog();
         }
 
         private void CancelSchedulerDialog(object obj)
@@ -123,10 +119,6 @@ namespace OutlookAddIn.Domain
 
         }
 
-        private void AddAppointment(object obj)
-        {
-            OnAddAppointment();
-        }
         #endregion
     }
 }

@@ -288,6 +288,8 @@ namespace OutlookAddIn.Domain
 
             roomsModel.ClearEventInvocations("NagigateToBookings");
             RoomsViewModel.NagigateToBookings += InitializeBookingsViewModel;
+            RoomsViewModel.OpenSchedulerDialogEventHandler += OpenSchedulerDialog;
+
 
             // Set the rooms as the current view model
             CurrentViewModel = roomsModel;
@@ -300,6 +302,27 @@ namespace OutlookAddIn.Domain
             {
                 InitializeBookingsViewModel(null, null);
             }
+        }
+
+        private void OpenSchedulerDialog(object obj, EventArgs e)
+        {
+            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(new Appointments());
+
+            SchedulerViewModel.OpenAddAppointmentDialogEventHandler += new EventHandler(OnOpenNewAppointmentDialog);
+
+            ((RoomsViewModel)CurrentViewModel).SchedulerContent = new SchedulerControl(schedulerViewModel);
+            ((RoomsViewModel)CurrentViewModel).IsSchedulerDialogOpen = true;
+        }
+
+        private void OnOpenNewAppointmentDialog(object sender, EventArgs e)
+        {
+            AppointmentViewModel appointmentModel = new AppointmentViewModel();
+
+            //appointmentModel.ClearEventInvocations("NagigateToBookings");
+            AppointmentViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
+
+            // Set the rooms as the current view model
+            CurrentViewModel = appointmentModel;
         }
         #endregion Command Implementations
 

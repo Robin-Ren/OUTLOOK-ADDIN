@@ -9,10 +9,11 @@
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
              xmlns:viewModel="clr-namespace:OutlookAddIn.Domain"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
              TextElement.FontSize="16"
-             TextOptions.TextFormattingMode="Ideal" 
+             TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}">
@@ -62,7 +63,9 @@
                        Margin="0" Name="lvRooms" MaxHeight="500px"
                        ItemsSource="{Binding AvailableRooms}"
                        ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                       SelectionMode="Single">
+                       SelectionMode="Single"
+                       HorizontalContentAlignment="Stretch"
+                       PreviewMouseLeftButtonUp="ListViewItem_PreviewMouseLeftButtonDown">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
@@ -72,7 +75,18 @@
                                 <DockPanel>
                                     <TextBlock Margin="4" Text="{Binding RoomName}" VerticalAlignment="Center" 
                                                TextAlignment="Center"
-                                               HorizontalAlignment="Center" FontSize="15"/>
+                                               HorizontalAlignment="Center" FontSize="15">
+                                        <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction 
+                            Command="{Binding DataContext.OpenSchedulerDialogCommand, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                        AncestorType={x:Type ItemsControl}}}"
+                            CommandParameter="{Binding}">                                
+                        </i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+                                    </TextBlock>
                                     <materialDesign:DialogHost DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center"
                                            IsOpen="{Binding ElementName=lvRooms, Path=DataContext.IsSchedulerDialogOpen}"
                                            DialogContent="{Binding ElementName=lvRooms, Path=DataContext.SchedulerContent}"
