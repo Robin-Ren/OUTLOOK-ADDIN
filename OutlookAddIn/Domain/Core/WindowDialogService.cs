@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using OutlookAddIn.Views;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public interface IUIWindowDialogService
     {
@@ -27,7 +27,6 @@ namespace OutlookAddIn.Domain
 
     class WindowDialogService : IUIWindowDialogService
     {
-        //*bdp 02/21/17 WEB-201 - Update to use new EmptyWindow class to allow for more flexibility in what we show.
         /// <summary>
         /// Shows a dialog to the user in a tool popup
         /// </summary>

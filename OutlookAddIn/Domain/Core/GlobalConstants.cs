@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
-    public static class OutlookAddinConstants
+    public static class GlobalConstants
     {
+        // App config settings
+        public static string WebApiBaseUri = ConfigurationManager.AppSettings["webApiBaseUri"];
+        public static string WebApiCondoId = ConfigurationManager.AppSettings["webApiCondoId"];
+
         /// <summary>
         /// Name of the standard config file
         /// </summary>
@@ -37,6 +37,10 @@ namespace OutlookAddIn.Domain
 
         public static readonly string ErrorEmailRequireSSLName = "ErrorEmailRequireSSL";
 
+        #endregion
+
+        #region Messages
+        public static readonly string LoginFailedMessage = @"User ID or password is incorrect!";
         #endregion
     }
 }

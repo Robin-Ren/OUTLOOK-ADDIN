@@ -6,7 +6,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
-             xmlns:viewModel="clr-namespace:OutlookAddIn.Domain"
+             xmlns:viewModel="clr-namespace:OutlookAddin.Domain"
              xmlns:view="clr-namespace:OutlookAddIn"
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
@@ -18,9 +18,6 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              >
-    <UserControl.DataContext>
-        <viewModel:BookingsViewModel />
-    </UserControl.DataContext>
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -46,22 +43,10 @@
             <Color x:Key="Primary400">#8d6e63</Color>
             <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" po:Freeze="True" />
             <SolidColorBrush x:Key="Primary400Brush" Color="{StaticResource Primary400}" po:Freeze="True" />
-            <!--DataTemplates-->
-            <!--
-            <DataTemplate DataType="{x:Type viewModel:RoomsViewModel}">
-                <view:RoomsControl />
-            </DataTemplate>-->
         </ResourceDictionary>
     </UserControl.Resources>
     <AdornerDecorator>
         <DockPanel LastChildFill="False" DockPanel.Dock="Top">
-            <!--<Button DockPanel.Dock="Top"
-                    HorizontalContentAlignment="Right"
-                                VerticalAlignment="Center"
-                                Command="{Binding Path=OpenNewBookingRoomsDialogCommand}"
-                                Margin="0"
-                                FontWeight="Bold"
-                                >New Booking +</Button>-->
             <materialDesign:ColorZone
                 DockPanel.Dock="Top" Mode="PrimaryMid"
                 Padding="0 6 0 6"

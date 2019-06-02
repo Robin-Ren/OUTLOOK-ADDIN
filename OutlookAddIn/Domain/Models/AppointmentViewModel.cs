@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
+    public delegate void AddAppointmentEventHandler(object sender, AddAppointmentEventArgs e);
+
     public class AppointmentViewModel : ABaseViewModel
     {
         #region Properties
@@ -107,7 +109,6 @@ namespace OutlookAddIn.Domain
         #endregion
 
         #region Events
-
         public AppointmentViewModel()
         {
             AddAppointmentCommand = new RelayCommand(OpenAddAppointmentDialog);
@@ -117,27 +118,27 @@ namespace OutlookAddIn.Domain
         /// <summary>
         /// Raised Add new appointment button is pressed.
         /// </summary>
-        public static event EventHandler AddAppointmentEventHandler;
+        public static event AddAppointmentEventHandler AddAppointmentEvent;
 
         /// <summary>
         /// Raises the NagigateToBookings event
         /// </summary>
         protected void OnAddAppointment()
         {
-            AddAppointmentEventHandler?.Invoke(this, new EventArgs());
+            AddAppointmentEvent?.Invoke(this, new AddAppointmentEventArgs());
         }
 
         /// <summary>
         /// Raised opening new booking rooms button is pressed.
         /// </summary>
-        public static event OpenNewBookingRoomsEventHandler OpenNewBookingRooms;
+        public static event OpenNewBookingRoomsEventHandler NavigateToBookingRooms;
 
         /// <summary>
-        /// Raises the OpenNewBookingRooms event
+        /// Raises the OnNavigateToBookingRooms event
         /// </summary>
-        protected void OnOpenNewBookingRooms()
+        protected void OnNavigateToBookingRooms()
         {
-            OpenNewBookingRooms?.Invoke(this, new EventArgs());
+            NavigateToBookingRooms?.Invoke(this, new EventArgs());
         }
         #endregion
 
@@ -151,7 +152,7 @@ namespace OutlookAddIn.Domain
         private void OpenNewBookingRoomsControl(object obj)
         {
             // Just raise the OnOpenNewBookingRooms Event
-            OnOpenNewBookingRooms();
+            OnNavigateToBookingRooms();
         }
         #endregion
     }

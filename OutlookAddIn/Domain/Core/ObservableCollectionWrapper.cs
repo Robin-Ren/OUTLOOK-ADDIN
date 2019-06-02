@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public class ObservableCollectionWrapper<T> : ObservableCollection<T>
         where T : INotifyPropertyChanged

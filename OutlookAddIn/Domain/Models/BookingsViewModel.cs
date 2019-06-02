@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using OutlookAddIn.CustomScheduler.Model;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public delegate void OpenNewBookingRoomsEventHandler(object sender, EventArgs e);
 
@@ -14,7 +14,6 @@ namespace OutlookAddIn.Domain
     {
         public BookingsViewModel()
         {
-            _appointments = new Appointments();
             OpenNewBookingRoomsDialogCommand = new RelayCommand(OpenNewBookingRoomsControl);
         }
 

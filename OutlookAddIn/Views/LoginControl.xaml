@@ -6,7 +6,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
-             xmlns:viewModel="clr-namespace:OutlookAddIn.Domain"
+             xmlns:viewModel="clr-namespace:OutlookAddin.Domain"
              xmlns:view="clr-namespace:OutlookAddIn"
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
@@ -17,9 +17,9 @@
              TextOptions.TextRenderingMode="Auto"
              FontFamily="{DynamicResource MaterialDesignFont}"
              >
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <viewModel:LoginViewModel />
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
 
     <UserControl.Background>
         <ImageBrush TileMode="None" ImageSource="pack://application:,,,/OutlookAddIn;component/Images/LoginBg.jpg" Stretch="UniformToFill" />
@@ -50,11 +50,6 @@
             <Color x:Key="Primary400">#8d6e63</Color>
             <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="{StaticResource Primary500Foreground}" po:Freeze="True" />
             <SolidColorBrush x:Key="Primary400Brush" Color="{StaticResource Primary400}" po:Freeze="True" />
-            <!--DataTemplates-->
-            <!--
-            <DataTemplate DataType="{x:Type viewModel:RoomsViewModel}">
-                <view:RoomsControl />
-            </DataTemplate>-->
         </ResourceDictionary>
     </UserControl.Resources>
     <AdornerDecorator>
@@ -68,8 +63,8 @@
                 </Grid.RowDefinitions>
                 <materialDesign:Card Grid.Row="1"
                     Opacity="1" Background="White" Width="200" Padding="0"
-                      Foreground="{StaticResource Primary400Brush}">
-                    <Grid Height="256" Width="200">
+                      Foreground="{StaticResource Primary400Brush}" Height="292" Margin="125,0,124.6,0">
+                    <Grid Height="335" Width="200">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -81,35 +76,49 @@
                                        FontWeight="Bold">LOGIN</TextBlock>
                             </StackPanel>
                         </materialDesign:ColorZone>
-                        <Grid Grid.Row="1" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Top"
-                          Width="172">
+                        <Grid Grid.Row="1" Margin="14,6,14,0" HorizontalAlignment="Center" VerticalAlignment="Top"
+                          Width="172" Height="236">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="73*"/>
                                 <ColumnDefinition Width="13*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <TextBox Opacity="1" materialDesign:HintAssist.Hint="User ID" materialDesign:HintAssist.IsFloating="True"
-                                 Margin="0 12 0 0" Grid.ColumnSpan="2" />
+                                 Margin="0,12,0,39.6" Grid.ColumnSpan="2"
+                                     Text="{Binding UserName, Mode=OneWayToSource}" Grid.RowSpan="2"/>
                             <PasswordBox Grid.Row="1" materialDesign:HintAssist.Hint="Password" materialDesign:HintAssist.IsFloating="True"
-                                 Margin="0 12 0 0" Grid.ColumnSpan="2"
-                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"/>
-                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,12,0,0.2" HorizontalAlignment="Right" Grid.ColumnSpan="2">
+                                         PasswordChanged="PasswordBox_PasswordChanged"
+                                 Margin="0,12.8,0,40" Grid.ColumnSpan="2"
+                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" Grid.RowSpan="2"/>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,13.4,0,0" HorizontalAlignment="Right" Grid.ColumnSpan="2" Width="145">
                                 <TextBlock VerticalAlignment="Center">Remember me</TextBlock>
-                                <ToggleButton Margin="8 0 0 0"></ToggleButton>
+                                <ToggleButton Margin="8 0 0 0"
+                                              ></ToggleButton>
                             </StackPanel>
-                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="-2,11.8,0,0.4" HorizontalAlignment="Right" Grid.ColumnSpan="2">
+                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="-2,12,0,1.6" HorizontalAlignment="Right" Grid.ColumnSpan="2" Width="174">
                                 <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                         Command="{Binding Path=LoginCommand}"
-                        Width="150" Margin="8 0 16 8"
-                        ToolTip="Resource name: MaterialDesignRaisedAccentButton"
+                                        CommandParameter="{Binding}"
+                        Width="150" Margin="8 0 4 0"
+                        ToolTip="Click to login"
                         materialDesign:RippleAssist.Feedback="#DD000000"
                         materialDesign:ShadowAssist.ShadowDepth="Depth3"
                         Content="Login" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="4" Grid.ColumnSpan="2"
+                                        Orientation="Horizontal" Margin="0,10,0,0.2">
+                                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left"
+                                        Foreground="Red" FontSize="12"
+                                        Text="{Binding Path=LoginMessage, UpdateSourceTrigger=PropertyChanged}"
+                                        IsEnabled="False"
+                                       />
                             </StackPanel>
                         </Grid>
                     </Grid>

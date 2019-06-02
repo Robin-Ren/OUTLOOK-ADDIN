@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     /// <summary>
     /// Base View Model class which implements the INotifyPropertyChanged interface. 
@@ -16,13 +16,6 @@ namespace OutlookAddIn.Domain
     public abstract class ABaseViewModel : INotifyPropertyChanged
     {
         protected IUIWindowDialogService _winDialogService = new WindowDialogService();
-
-        #region Public Properties
-        /// <summary>
-        /// Gets and sets the display name of the view model
-        /// </summary>
-        public string Name { get; set; }
-        #endregion
 
         /// <summary>
         /// Refreshes the view model state
@@ -41,7 +34,7 @@ namespace OutlookAddIn.Domain
         /// <param name="e">Exception to log.</param>
         protected void LogExceptionDetails(Exception e)
         {
-            string fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, OutlookAddinConstants.ErrorLogFile);
+            string fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, GlobalConstants.ErrorLogFile);
 
             StringBuilder errorMessage = new StringBuilder();
             errorMessage.Append("Exception occurred at: ");

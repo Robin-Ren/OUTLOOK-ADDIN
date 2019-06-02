@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public static class NotifyPropertyChangedExtension
     {

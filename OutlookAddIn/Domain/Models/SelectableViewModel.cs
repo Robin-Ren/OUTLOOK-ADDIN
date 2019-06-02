@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     
     public class SelectableViewModel : INotifyPropertyChanged

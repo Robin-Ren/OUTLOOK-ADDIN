@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using OutlookAddIn.CustomScheduler.Model;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
+    public delegate void NavigateToAddAppointmentEventHandler(object sender, NavigateToAddAppointmentEventArgs e);
+
     public class SchedulerViewModel : ABaseViewModel
     {
         public SchedulerViewModel(Appointments appointments)
         {
             Appointments = appointments;
 
-            OpenAddAppointmentDialogCommand = new RelayCommand(OpenAddAppointmentDialog);
+            OpenAddAppointmentDialogCommand = new RelayCommand(NavigateToAddAppointment);
         }
 
         #region Properties
@@ -36,14 +38,14 @@ namespace OutlookAddIn.Domain
         /// <summary>
         /// Raised Add new appointment button is pressed.
         /// </summary>
-        public static event EventHandler OpenAddAppointmentDialogEventHandler;
+        public static event NavigateToAddAppointmentEventHandler NavigateToAddAppointmentEvent;
 
         /// <summary>
         /// Raises the NagigateToBookings event
         /// </summary>
-        protected void OnOpenAddAppointmentDialog()
+        protected void OnNavigateToAddAppointment(NavigateToAddAppointmentEventArgs args)
         {
-            OpenAddAppointmentDialogEventHandler?.Invoke(this, new EventArgs());
+            NavigateToAddAppointmentEvent?.Invoke(this, args);
         }
         #endregion
 
@@ -54,9 +56,9 @@ namespace OutlookAddIn.Domain
 
         #region Command Implementations
 
-        private void OpenAddAppointmentDialog(object obj)
+        private void NavigateToAddAppointment(object obj)
         {
-            OnOpenAddAppointmentDialog();
+            OnNavigateToAddAppointment((NavigateToAddAppointmentEventArgs)obj);
         }
         #endregion
     }

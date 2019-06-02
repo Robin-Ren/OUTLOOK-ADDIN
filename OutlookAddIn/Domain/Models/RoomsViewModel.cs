@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using OutlookAddIn.CustomScheduler.Model;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
+    public delegate void NagigateToBookingsEventHandler(object sender, NagigateToBookingsArgs e);
+    public delegate void OpenSchedulerDialogEventHandler(object sender, OpenSchedulerDialogArgs e);
+
     public class RoomsViewModel : ABaseViewModel
     {
         public RoomsViewModel()
         {
-            _rooms = new ObservableCollectionWrapper<Room>();
+            _facilities = new ObservableCollectionWrapper<Facility>();
 
             NagigateToBookingsDialogCommand = new RelayCommand(NagigateToBookingsControl);
             OpenSchedulerDialogCommand = new RelayCommand(OpenSchedulerDialog);
@@ -23,18 +26,18 @@ namespace OutlookAddIn.Domain
         #region Properties
         private bool _isSchedulerDialogOpen;
         private object _SchedulerContent;
-        private ObservableCollectionWrapper<Room> _rooms;
+        private ObservableCollectionWrapper<Facility> _facilities;
 
-        public ObservableCollectionWrapper<Room> AvailableRooms
+        public ObservableCollectionWrapper<Facility> AvailableFacilities
         {
             get
             {
-                return _rooms;
+                return _facilities;
             }
 
             set
             {
-                _rooms = value;
+                _facilities = value;
                 OnPropertyChanged();
             }
         }
@@ -63,30 +66,31 @@ namespace OutlookAddIn.Domain
         #endregion
 
         #region Events
+
         /// <summary>
         /// Raised opening new booking rooms button is pressed.
         /// </summary>
-        public static event EventHandler NagigateToBookings;
+        public static event NagigateToBookingsEventHandler NagigateToBookingsEvent;
 
         /// <summary>
         /// Raises the NagigateToBookings event
         /// </summary>
         protected void OnNagigateToBookings()
         {
-            NagigateToBookings?.Invoke(this, new EventArgs());
+            NagigateToBookingsEvent?.Invoke(this, new NagigateToBookingsArgs());
         }
 
         /// <summary>
-        /// Raised Add new appointment button is pressed.
+        /// Raised when a meeting room is selected.
         /// </summary>
-        public static event EventHandler OpenSchedulerDialogEventHandler;
+        public static event OpenSchedulerDialogEventHandler OpenSchedulerDialogEvent;
 
         /// <summary>
         /// Raises the OpenSchedulerDialogEventHandler event
         /// </summary>
-        protected void OnOpenSchedulerDialog()
+        protected void OnOpenSchedulerDialog(OpenSchedulerDialogArgs e)
         {
-            OpenSchedulerDialogEventHandler?.Invoke(this, new EventArgs());
+            OpenSchedulerDialogEvent?.Invoke(this, e);
         }
         #endregion
 
@@ -106,7 +110,12 @@ namespace OutlookAddIn.Domain
 
         private void OpenSchedulerDialog(object obj)
         {
-            OnOpenSchedulerDialog();
+            OpenSchedulerDialogArgs e = new OpenSchedulerDialogArgs
+            {
+                SelectedRoom = obj as RoomEntity
+            };
+
+            OnOpenSchedulerDialog(e);
         }
 
         private void CancelSchedulerDialog(object obj)

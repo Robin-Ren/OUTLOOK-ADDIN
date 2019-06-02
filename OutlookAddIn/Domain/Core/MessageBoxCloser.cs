@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public static class MessageBoxCloser
     {
@@ -17,7 +17,7 @@ namespace OutlookAddIn.Domain
 
         private static void MessageBoxResultChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            var msgBox = obj as Window;
+            var msgBox = obj as System.Windows.Window;
 
             if (msgBox != null)
             {
@@ -25,7 +25,7 @@ namespace OutlookAddIn.Domain
             }
         }
 
-        public static void SetMessageBoxResult(Window target, bool? value)
+        public static void SetMessageBoxResult(System.Windows.Window target, bool? value)
         {
             target.SetValue(MessageBoxResultProperty, value);
         }

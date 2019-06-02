@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
-using OutlookAddIn.Domain;
+using OutlookAddin.Domain;
 using OutlookAddIn.CustomScheduler;
 using OutlookAddIn.CustomScheduler.Model;
 using Office = Microsoft.Office.Core;
@@ -25,7 +25,7 @@ using Word = Microsoft.Office.Interop.Word;
 namespace OutlookAddIn
 {
     /// <summary>
-    /// BookingsControl.xaml
+    /// LoginControl.xaml
     /// </summary>
     public partial class LoginControl : UserControl
     {
@@ -37,6 +37,14 @@ namespace OutlookAddIn
         private void CanOpenDialog(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext != null)
+            {
+                ((LoginViewModel)this.DataContext).Password = ((PasswordBox)sender).Password;
+            }
         }
     }
 }

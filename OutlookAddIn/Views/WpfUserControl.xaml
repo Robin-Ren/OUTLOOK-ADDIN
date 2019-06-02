@@ -7,7 +7,7 @@
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
              xmlns:schedulerModel="clr-namespace:OutlookAddIn.CustomScheduler.Model"
-             xmlns:viewModel="clr-namespace:OutlookAddIn.Domain"
+             xmlns:viewModel="clr-namespace:OutlookAddin.Domain"
              xmlns:view="clr-namespace:OutlookAddIn"
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
-    public class Room : ABaseViewModel
+    public class RoomEntity : ABaseViewModel
     {
         private string _roomName;
 

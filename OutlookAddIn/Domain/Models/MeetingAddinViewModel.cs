@@ -2,25 +2,29 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using OutlookAddIn;
 using OutlookAddIn.CustomScheduler.Model;
+using OutlookAddIn.WebAPIClient;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using Word = Microsoft.Office.Interop.Word;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public class MeetingAddinViewModel : ABaseViewModel
     {
         #region Private Members
+        private static WebAPIDataAccess apiDataAccess;
+
         private DateTime _dateStart;
         private DateTime _dateEnd;
         private string _mailBody;
         private DateTime? _futureValidatingDate;
-        private string _selectedMeetingRoom;
+        private RoomEntity _selectedRoom;
         private string _selectedRecipient;
         private ObservableCollection<string> _recipients;
         private Appointments _appointments;
@@ -94,12 +98,13 @@ namespace OutlookAddIn.Domain
             }
         }
 
-        public string SelectedMeetingRoom
+        public RoomEntity SelectedRoom
         {
-            get { return _selectedMeetingRoom; }
+            get { return _selectedRoom; }
             set
             {
-                this.MutateVerbose(ref _selectedMeetingRoom, value, RaisePropertyChanged());
+                _selectedRoom = value;
+                OnPropertyChanged();
             }
         }
 
@@ -133,10 +138,6 @@ namespace OutlookAddIn.Domain
                 OnPropertyChanged();
             }
         }
-
-        /// <summary>
-        /// Gets and sets the list of meeting rooms.
-        public List<string> AvailableMeetingRooms { get; set; }
         #endregion Properties
 
         #region Commands
@@ -148,13 +149,7 @@ namespace OutlookAddIn.Domain
         {
             DateStart = DateTime.Now;
             DateEnd = DateTime.Now;
-            SelectedMeetingRoom = null;
-
-            //// Initialize booking view model
-            //if (_bookingViewModel == null)
-            //{
-            //    InitializeBookingsViewModel(null, null);
-            //}
+            SelectedRoom = null;
 
             // Initialize login view model
             if (_loginViewModel == null)
@@ -162,34 +157,27 @@ namespace OutlookAddIn.Domain
                 InitializeLoginViewModel(null, null);
             }
 
-            AvailableMeetingRooms = new List<string>
-            {
-                "Room 1 - West",
-                "Room 2 - East",
-                "Room 3 - North",
-                "Room 4 - South"
-            };
-            MailBody = "This is mail body.";
-
-            Recipients = new ObservableCollection<string>
-            {
-                "rore@163.com",
-                "joe.wang@alibaba.com"
-            };
-
             // Commands
             AcceptCommand = new RelayCommand(OnAccept);
             CancelCommand = new RelayCommand(OnCancel);
+
+            // Initialize WebAPI Client
+            apiDataAccess = new WebAPIDataAccess();
         }
 
         /// <summary>
         /// Initialize Bookings view model object
         /// </summary>
-        private void InitializeBookingsViewModel(object sender, EventArgs e)
+        private async void InitializeBookingsViewModel(object sender, NagigateToBookingsArgs e)
         {
             _bookingViewModel = new BookingsViewModel();
+
+            _appointments = await apiDataAccess.GetBookingRecords();
+            _bookingViewModel.Appointments = _appointments;
+
             _bookingViewModel.ClearEventInvocations("OpenNewBookingRooms");
             BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
+
             CurrentViewModel = _bookingViewModel;
         }
 
@@ -221,7 +209,7 @@ namespace OutlookAddIn.Domain
                     return;
                 }
 
-                meetingItem.Location = SelectedMeetingRoom;
+                meetingItem.Location = SelectedRoom.RoomName;
 
                 meetingItem.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
                 meetingItem.Body = MailBody;
@@ -256,70 +244,59 @@ namespace OutlookAddIn.Domain
 
         }
 
-        private void OnOpenNewBookingRoomsDialog(object sender, EventArgs e)
+        private async void OnOpenNewBookingRoomsDialog(object sender, EventArgs e)
         {
             RoomsViewModel roomsModel = new RoomsViewModel();
 
-            roomsModel.AvailableRooms.Add(
-                new Room
-                {
-                    RoomName = "Room 001"
-                });
-            roomsModel.AvailableRooms.Add(
-                new Room
-                {
-                    RoomName = "Room 002"
-                });
-            roomsModel.AvailableRooms.Add(
-                new Room
-                {
-                    RoomName = "Room 003"
-                });
-            roomsModel.AvailableRooms.Add(
-                new Room
-                {
-                    RoomName = "Room 004"
-                });
-            roomsModel.AvailableRooms.Add(
-                new Room
-                {
-                    RoomName = "Room 005"
-                });
+            roomsModel.AvailableFacilities = await apiDataAccess.GetFacilitiesVenue();
 
-            roomsModel.ClearEventInvocations("NagigateToBookings");
-            RoomsViewModel.NagigateToBookings += InitializeBookingsViewModel;
-            RoomsViewModel.OpenSchedulerDialogEventHandler += OpenSchedulerDialog;
+            roomsModel.ClearEventInvocations("NagigateToBookingsEvent");
+            roomsModel.ClearEventInvocations("OpenSchedulerDialogEvent");
+            RoomsViewModel.NagigateToBookingsEvent += InitializeBookingsViewModel;
+            RoomsViewModel.OpenSchedulerDialogEvent += OpenSchedulerDialog;
 
 
             // Set the rooms as the current view model
             CurrentViewModel = roomsModel;
         }
 
-        private void OnDoLogin(object sender, EventArgs e)
+        private async void OnDoLogin(object sender, LoginEventArgs e)
         {
-            // Initialize booking view model
-            if (_bookingViewModel == null)
+            _loginViewModel.IsSucceeded = await apiDataAccess.DoLogin(e);
+
+            if (_loginViewModel.IsSucceeded)
             {
-                InitializeBookingsViewModel(null, null);
+                _loginViewModel.LoginMessage = string.Empty;
+                // Initialize booking view model
+                if (_bookingViewModel == null)
+                {
+                    InitializeBookingsViewModel(null, null);
+                }
+            }
+            else
+            {
+                _loginViewModel.LoginMessage = GlobalConstants.LoginFailedMessage;
             }
         }
 
-        private void OpenSchedulerDialog(object obj, EventArgs e)
+        private void OpenSchedulerDialog(object obj, OpenSchedulerDialogArgs e)
         {
-            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(new Appointments());
+            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(_appointments);
 
-            SchedulerViewModel.OpenAddAppointmentDialogEventHandler += new EventHandler(OnOpenNewAppointmentDialog);
+            SchedulerViewModel.NavigateToAddAppointmentEvent += new NavigateToAddAppointmentEventHandler(OnOpenNewAppointmentDialog);
 
             ((RoomsViewModel)CurrentViewModel).SchedulerContent = new SchedulerControl(schedulerViewModel);
             ((RoomsViewModel)CurrentViewModel).IsSchedulerDialogOpen = true;
+
+            _selectedRoom = e.SelectedRoom;
         }
 
-        private void OnOpenNewAppointmentDialog(object sender, EventArgs e)
+        private void OnOpenNewAppointmentDialog(object sender, NavigateToAddAppointmentEventArgs e)
         {
             AppointmentViewModel appointmentModel = new AppointmentViewModel();
 
-            //appointmentModel.ClearEventInvocations("NagigateToBookings");
-            AppointmentViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
+            appointmentModel.ClearEventInvocations("NavigateToBookingRooms");
+            AppointmentViewModel.NavigateToBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
 
             // Set the rooms as the current view model
             CurrentViewModel = appointmentModel;

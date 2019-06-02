@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OutlookAddIn.CustomScheduler;
 using OutlookAddIn.CustomScheduler.Model;
-using OutlookAddIn.Domain;
+using OutlookAddin.Domain;
 
 namespace OutlookAddIn
 {

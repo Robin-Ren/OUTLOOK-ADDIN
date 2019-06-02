@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
-using OutlookAddIn.Domain;
+using OutlookAddin.Domain;
 using OutlookAddIn.CustomScheduler;
 using OutlookAddIn.CustomScheduler.Model;
 using Office = Microsoft.Office.Core;

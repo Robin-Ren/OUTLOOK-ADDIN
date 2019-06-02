@@ -15,9 +15,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
-using OutlookAddIn.Domain;
+using OutlookAddin.Domain;
 using OutlookAddIn.CustomScheduler;
 using OutlookAddIn.CustomScheduler.Model;
+using OutlookAddIn.WebAPIClient;
 using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Word = Microsoft.Office.Interop.Word;
@@ -41,7 +42,10 @@ namespace OutlookAddIn
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            SetCurrentValue(CustomScheduler.Controls.Calendar.AppointmentsProperty, new Appointments());
+            //WebAPIDataAccess apiDataAccess = new WebAPIDataAccess();
+            //var appointments = await apiDataAccess.GetBookingRecords();
+
+            //SetCurrentValue(CustomScheduler.Controls.Calendar.AppointmentsProperty, new Appointments());
         }
     }
 }

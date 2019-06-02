@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public static class ViewModelExtensions
     {

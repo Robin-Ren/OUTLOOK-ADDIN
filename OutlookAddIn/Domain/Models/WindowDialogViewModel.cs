@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace OutlookAddIn.Domain
+namespace OutlookAddin.Domain
 {
     public class WindowDialogViewModel : INotifyPropertyChanged
     {
