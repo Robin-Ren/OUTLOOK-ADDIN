@@ -112,7 +112,7 @@ namespace OutlookAddin.Domain
         {
             OpenSchedulerDialogArgs e = new OpenSchedulerDialogArgs
             {
-                SelectedRoom = obj as RoomEntity
+                SelectedRoom = obj as Facility
             };
 
             OnOpenSchedulerDialog(e);

@@ -8,7 +8,7 @@ namespace OutlookAddin.Domain
 {
     public static class Utils
     {
-        public static DateTime ConvertLongToDateTime(long ticks)
+        public static DateTime ConvertUnixTicksToDateTime(long ticks)
         {
             DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             DateTime date = start.AddMilliseconds(ticks).ToLocalTime();

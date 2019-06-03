@@ -8,5 +8,8 @@ namespace OutlookAddin.Domain
 {
     public class NavigateToAddAppointmentEventArgs : EventArgs
     {
+        public int FacilityID { get; set; }
+        public DateTime StartTimeslot { get; set; }
+        public DateTime EndTimeslot { get; set; }
     }
 }

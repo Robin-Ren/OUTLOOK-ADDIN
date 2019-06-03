@@ -217,6 +217,79 @@ namespace OutlookAddIn.CustomScheduler.Controls
                 }
             }
         }
+
+        public Tuple<DateTime?, DateTime?> GetSelectedTimeslots()
+        {
+            var checkedTimeslots = DependencyObjectHelper
+                .FindVisualChildren<CalendarTimeslotItem>(this)
+                .Where(x => x.IsChecked == true)
+                .OrderBy(x => x.TimeslotDate)
+                .ThenBy(x => x.TimeslotStart)
+                .ToList();
+
+            if (checkedTimeslots != null)
+            {
+                DateTime startTime = DateTime.Now;
+                DateTime endTime = DateTime.Now;
+                CalendarTimeslotItem previousTimeslot = null;
+
+                var last = checkedTimeslots.Last();
+                foreach (var timeslot in checkedTimeslots)
+                {
+                    if (previousTimeslot == null)
+                    {
+                        previousTimeslot = timeslot;
+                        startTime =new DateTime(
+                            timeslot.TimeslotDate.Year,
+                            timeslot.TimeslotDate.Month,
+                            timeslot.TimeslotDate.Day,
+                            Convert.ToInt32(timeslot.TimeslotStart.Substring(0, 2)),
+                            Convert.ToInt32(timeslot.TimeslotStart.Substring(3, 2)),
+                            00);
+                        endTime = new DateTime(
+                            timeslot.TimeslotDate.Year,
+                            timeslot.TimeslotDate.Month,
+                            timeslot.TimeslotDate.Day,
+                            Convert.ToInt32(timeslot.TimeslotEnd.Substring(0, 2)),
+                            Convert.ToInt32(timeslot.TimeslotEnd.Substring(3, 2)),
+                            00);
+                    }
+                    else if (timeslot.Equals(last))
+                    {
+                        endTime = new DateTime(
+                            timeslot.TimeslotDate.Year,
+                            timeslot.TimeslotDate.Month,
+                            timeslot.TimeslotDate.Day,
+                            Convert.ToInt32(timeslot.TimeslotEnd.Substring(0, 2)),
+                            Convert.ToInt32(timeslot.TimeslotEnd.Substring(3, 2)),
+                            00);
+                    }
+                    else
+                    {
+                        if (timeslot.IsAdjacentAfter(previousTimeslot))
+                        {
+                            previousTimeslot = timeslot;
+                        }
+                        else
+                        {
+                            endTime = new DateTime(
+                            previousTimeslot.TimeslotDate.Year,
+                            previousTimeslot.TimeslotDate.Month,
+                            previousTimeslot.TimeslotDate.Day,
+                            Convert.ToInt32(previousTimeslot.TimeslotEnd.Substring(0, 2)),
+                            Convert.ToInt32(previousTimeslot.TimeslotEnd.Substring(3, 2)),
+                            00);
+
+                            break;
+                        }
+                    }
+                }
+
+                return new Tuple<DateTime?, DateTime?>(startTime, endTime);
+            }
+
+            return new Tuple<DateTime?, DateTime?>(null, null);
+        }
         #endregion
 
         public static readonly RoutedCommand CloseDialog = new RoutedCommand("CloseDialog", typeof(Calendar));

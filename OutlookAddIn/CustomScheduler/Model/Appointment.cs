@@ -21,16 +21,16 @@ namespace OutlookAddIn.CustomScheduler.Model
             }
         }
 
-        private string location;
-        public string Location
+        private int _facilityId;
+        public int FacilityID
         {
-            get { return location; }
+            get { return _facilityId; }
             set
             {
-                if (location != value)
+                if (_facilityId != value)
                 {
-                    location = value;
-                    RaisePropertyChanged("Location");
+                    _facilityId = value;
+                    RaisePropertyChanged("FacilityID");
                 }
             }
         }

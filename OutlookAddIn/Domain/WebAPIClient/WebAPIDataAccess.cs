@@ -98,10 +98,11 @@ namespace OutlookAddIn.WebAPIClient
                             var appointment = new Appointment
                             {
                                 Subject = string.Format("{0} - {1}",
-                                entity.facilityBooking.requestNo,
-                                entity.facilityBooking.facility.name),
-                                StartTime = Utils.ConvertLongToDateTime(entity.facilityBooking.requestedStartDate.Value),
-                                EndTime = Utils.ConvertLongToDateTime(entity.facilityBooking.requestedEndDate.Value),
+                                        entity.facilityBooking.requestNo,
+                                        entity.facilityBooking.facility.name),
+                                FacilityID = entity.facilityBooking.facility.id,
+                                StartTime = Utils.ConvertUnixTicksToDateTime(entity.facilityBooking.requestedStartDate.Value),
+                                EndTime = Utils.ConvertUnixTicksToDateTime(entity.facilityBooking.requestedEndDate.Value),
                             };
                             appointments.Add(appointment);
                         }

@@ -8,6 +8,6 @@ namespace OutlookAddin.Domain
 {
     public class OpenSchedulerDialogArgs
     {
-        public RoomEntity SelectedRoom { get; set; }
+        public Facility SelectedRoom { get; set; }
     }
 }

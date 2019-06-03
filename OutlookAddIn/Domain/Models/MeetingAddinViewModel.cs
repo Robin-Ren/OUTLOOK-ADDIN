@@ -24,7 +24,7 @@ namespace OutlookAddin.Domain
         private DateTime _dateEnd;
         private string _mailBody;
         private DateTime? _futureValidatingDate;
-        private RoomEntity _selectedRoom;
+        private Facility _selectedRoom;
         private string _selectedRecipient;
         private ObservableCollection<string> _recipients;
         private Appointments _appointments;
@@ -98,7 +98,7 @@ namespace OutlookAddin.Domain
             }
         }
 
-        public RoomEntity SelectedRoom
+        public Facility SelectedRoom
         {
             get { return _selectedRoom; }
             set
@@ -209,7 +209,7 @@ namespace OutlookAddin.Domain
                     return;
                 }
 
-                meetingItem.Location = SelectedRoom.RoomName;
+                meetingItem.Location = SelectedRoom.name;
 
                 meetingItem.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
                 meetingItem.Body = MailBody;
@@ -281,14 +281,26 @@ namespace OutlookAddin.Domain
 
         private void OpenSchedulerDialog(object obj, OpenSchedulerDialogArgs e)
         {
-            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(_appointments);
+            _selectedRoom = e.SelectedRoom;
+
+            Appointments appointmentsForSelectedFacility = new Appointments();
+            if (_appointments != null)
+            {
+                foreach(var apt in _appointments)
+                {
+                    if(apt.FacilityID == _selectedRoom.id)
+                    {
+                        appointmentsForSelectedFacility.Add(apt);
+                    }
+                }
+            }
+
+            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(appointmentsForSelectedFacility);
 
             SchedulerViewModel.NavigateToAddAppointmentEvent += new NavigateToAddAppointmentEventHandler(OnOpenNewAppointmentDialog);
 
             ((RoomsViewModel)CurrentViewModel).SchedulerContent = new SchedulerControl(schedulerViewModel);
             ((RoomsViewModel)CurrentViewModel).IsSchedulerDialogOpen = true;
-
-            _selectedRoom = e.SelectedRoom;
         }
 
         private void OnOpenNewAppointmentDialog(object sender, NavigateToAddAppointmentEventArgs e)

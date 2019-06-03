@@ -35,7 +35,7 @@
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.88</ApplicationVersion>
+    <ApplicationVersion>1.0.0.95</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -207,6 +207,7 @@
   -->
   <ItemGroup>
     <Compile Include="CustomScheduler\Controls\ValueConverters.cs" />
+    <Compile Include="CustomScheduler\Model\TimeslotExtensions.cs" />
     <Compile Include="Domain\Core\GlobalConstants.cs" />
     <Compile Include="Domain\Core\IsCheckedValidationRule.cs" />
     <Compile Include="Domain\Core\MessageBoxCloser.cs" />

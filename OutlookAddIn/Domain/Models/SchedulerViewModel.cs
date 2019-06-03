@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using OutlookAddIn.CustomScheduler.Controls;
 using OutlookAddIn.CustomScheduler.Model;
 
 namespace OutlookAddin.Domain
@@ -58,7 +59,20 @@ namespace OutlookAddin.Domain
 
         private void NavigateToAddAppointment(object obj)
         {
-            OnNavigateToAddAppointment((NavigateToAddAppointmentEventArgs)obj);
+            var calendarObj = obj as Calendar;
+            var timeslots = calendarObj.GetSelectedTimeslots();
+
+            if (timeslots == null ||
+               !timeslots.Item1.HasValue ||
+               !timeslots.Item2.HasValue)
+                return;
+
+            var args = new NavigateToAddAppointmentEventArgs
+            {
+                StartTimeslot = timeslots.Item1.Value,
+                EndTimeslot = timeslots.Item2.Value
+            };
+            OnNavigateToAddAppointment(args);
         }
         #endregion
     }
