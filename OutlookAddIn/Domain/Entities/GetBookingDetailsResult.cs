@@ -9,6 +9,6 @@ namespace OutlookAddin.Domain
     public class GetBookingDetailsResult
     {
         public FacilityBookingDetailSearchCriteria facilityBookingDetailSearchCriteria { get; set; }
-        public List<Entity> entities { get; set; }
+        public List<BookingDetail> entities { get; set; }
     }
 }

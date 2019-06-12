@@ -4,12 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using OutlookAddin.Domain;
-using OutlookAddIn.CustomScheduler.Model;
 
 namespace OutlookAddIn.WebAPIClient
 {
@@ -46,13 +46,6 @@ namespace OutlookAddIn.WebAPIClient
 
         public async Task<bool> DoLogin(LoginEventArgs loginArgs)
         {
-            //HttpClient client1 = new HttpClient();
-            //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/accounts/3?viewFormat=EXTPUB");
-
-            //// Add token to the Authorization header and make the request
-            //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer");
-            //HttpResponseMessage response = await client1.SendAsync(request);
-
             StringContent content = new StringContent(JsonConvert.SerializeObject(loginArgs), Encoding.UTF8, "application/json");
             // HTTP POST
             var response = await client.PostAsync("api/authentications", content);
@@ -153,6 +146,84 @@ namespace OutlookAddIn.WebAPIClient
             }
 
             return null;
+        }
+
+        public async Task<ObservableCollectionWrapper<TimeSlot>> GetTimeSlots(int facilityId, long fromTicks, long toTicks)
+        {
+            try
+            {
+                // First, try getting timeslots from cache
+                ObjectCache cache = MemoryCache.Default;
+                string cacheKey = string.Format(GlobalConstants.TimeSlotCacheKey,
+                    facilityId,
+                    fromTicks,
+                    toTicks);
+
+                if (cache.Contains(cacheKey))
+                {
+                    var result = (ObservableCollectionWrapper<TimeSlot>)cache.Get(cacheKey);
+
+                    if (result != null && result.Count > 0)
+                        return result;
+                }
+
+                // HTTP GET
+                var response = await client.GetAsync(String.Format("api/condos/{0}/condo-facilities/{1}/timeslots?from={2}&to={3}&viewFormat=EXTMAX", GlobalConstants.WebApiCondoId,
+                facilityId,
+                fromTicks,
+                toTicks));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string data = await response.Content.ReadAsStringAsync();
+                    var timeslotsResult = JsonConvert.DeserializeObject<GetTimeslotsResult>(data);
+
+                    if (timeslotsResult == null ||
+                       timeslotsResult.entities == null)
+                    {
+                        return null;
+                    }
+
+                    var timeslots = new ObservableCollectionWrapper<TimeSlot>();
+
+                    foreach (var entity in timeslotsResult.entities)
+                    {
+                        timeslots.Add(entity);
+                    }
+
+                    // Store data in the cache
+                    CacheItemPolicy cacheItemPolicy = new CacheItemPolicy();
+                    cacheItemPolicy.AbsoluteExpiration = DateTime.Now.AddHours(1.0);
+                    cache.Add(cacheKey, timeslots, cacheItemPolicy);
+
+                    return timeslots;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+            return null;
+        }
+
+        public async Task<bool> SaveBookingRequest(SaveBookingRequestArgs args)
+        {
+            StringContent content = new StringContent(JsonConvert.SerializeObject(args), Encoding.UTF8, "application/json");
+            // HTTP POST
+            var response = await client.PostAsync(string.Format("api/condos/{0}/facility-bookings", GlobalConstants.WebApiCondoId), content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                var authResult = JsonConvert.DeserializeObject<AuthenticationResult>(data);
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

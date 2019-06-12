@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using OutlookAddIn.CustomScheduler.Model;
 
 namespace OutlookAddin.Domain
 {
-    public delegate void OpenNewBookingRoomsEventHandler(object sender, EventArgs e);
+    public delegate void OpenNewBookingRoomsEventHandler(object sender);
 
     public class BookingsViewModel : ABaseViewModel
     {
@@ -28,7 +27,7 @@ namespace OutlookAddin.Domain
         /// </summary>
         protected void OnOpenNewBookingRooms()
         {
-            OpenNewBookingRooms?.Invoke(this, new EventArgs());
+            OpenNewBookingRooms?.Invoke(this);
         }
         #endregion
 

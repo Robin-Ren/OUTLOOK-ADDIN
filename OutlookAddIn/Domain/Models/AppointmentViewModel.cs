@@ -121,7 +121,7 @@ namespace OutlookAddin.Domain
         public static event AddAppointmentEventHandler AddAppointmentEvent;
 
         /// <summary>
-        /// Raises the NagigateToBookings event
+        /// Raises the NavigateToBookings event
         /// </summary>
         protected void OnAddAppointment()
         {
@@ -138,7 +138,7 @@ namespace OutlookAddin.Domain
         /// </summary>
         protected void OnNavigateToBookingRooms()
         {
-            NavigateToBookingRooms?.Invoke(this, new EventArgs());
+            NavigateToBookingRooms?.Invoke(this);
         }
         #endregion
 

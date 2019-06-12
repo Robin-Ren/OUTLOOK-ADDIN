@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace OutlookAddin.Domain
 {
-    public class NavigateToSelectDateDialogArgs
+    public class NavigateToConfirmAppointmentArgs
     {
-        public Facility SelectedRoom { get; set; }
     }
 }

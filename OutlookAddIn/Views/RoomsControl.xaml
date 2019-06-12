@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
-             xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
              xmlns:viewModel="clr-namespace:OutlookAddin.Domain"
@@ -37,7 +36,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Calendar.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/OutlookAddIn;component/CustomScheduler/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Color x:Key="Primary500Foreground">#DDFFFFFF</Color>
             <Color x:Key="Primary400">#8d6e63</Color>
@@ -52,7 +50,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
-                            Command="{Binding Path=NagigateToBookingsDialogCommand}"
+                            Command="{Binding Path=NavigateToBookingsDialogCommand}"
                             HorizontalAlignment="Right">
                         <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Left" />
                     </Button>
@@ -72,7 +70,7 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseLeftButtonUp">
                                     <i:InvokeCommandAction 
-                            Command="{Binding ElementName=lvRooms, Path=DataContext.OpenSchedulerDialogCommand}"
+                            Command="{Binding ElementName=lvRooms, Path=DataContext.NavigateToSelectDateDialogCommand}"
                             CommandParameter="{Binding}">
                                     </i:InvokeCommandAction>
                                 </i:EventTrigger>

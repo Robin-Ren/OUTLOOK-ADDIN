@@ -11,13 +11,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using OutlookAddin.Domain;
 using OutlookAddIn.CustomScheduler.Model;
+using OutlookAddIn.WebAPIClient;
 
 namespace OutlookAddIn.CustomScheduler.Controls
 {
     public class Calendar : Control
     {
+        private static WebAPIDataAccess apiDataAccess;
+
         static Calendar()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Calendar), new FrameworkPropertyMetadata(typeof(Calendar)));
@@ -26,6 +29,9 @@ namespace OutlookAddIn.CustomScheduler.Controls
             CommandManager.RegisterClassCommandBinding(typeof(Calendar), new CommandBinding(PreviousDay, new ExecutedRoutedEventHandler(OnExecutedPreviousDay), new CanExecuteRoutedEventHandler(OnCanExecutePreviousDay)));
 
             CommandManager.RegisterClassCommandBinding(typeof(Calendar), new CommandBinding(CloseDialog, new ExecutedRoutedEventHandler(OnExecutedCloseDialog), new CanExecuteRoutedEventHandler(OnCanCloseDialog)));
+
+            // Initialize WebAPI Client
+            apiDataAccess = new WebAPIDataAccess();
         }
 
         #region AddAppointment
@@ -71,6 +77,56 @@ namespace OutlookAddIn.CustomScheduler.Controls
 
         #endregion
 
+        #region FacilityID
+
+        public static readonly DependencyProperty FacilityIDProperty =
+            DependencyProperty.Register("FacilityID", typeof(int), typeof(Calendar),
+            new FrameworkPropertyMetadata(0, new PropertyChangedCallback(Calendar.OnFacilityIDChanged)));
+
+        public int FacilityID
+        {
+            get { return (int)GetValue(FacilityIDProperty); }
+            set
+            {
+                SetValue(FacilityIDProperty, value);
+            }
+        }
+
+        private static void OnFacilityIDChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Calendar)d).OnFacilityIDChanged(e);
+        }
+
+        protected virtual void OnFacilityIDChanged(DependencyPropertyChangedEventArgs e)
+        {
+            ApplyTemplate();
+        }
+
+        #endregion
+
+        #region TimeSlots
+
+        public static readonly DependencyProperty TimeSlotsProperty =
+            DependencyProperty.Register("TimeSlots", typeof(IEnumerable<TimeSlot>), typeof(Calendar),
+            new FrameworkPropertyMetadata(null, new PropertyChangedCallback(Calendar.OnTimeSlotsChanged)));
+
+        public IEnumerable<TimeSlot> TimeSlots
+        {
+            get { return (IEnumerable<TimeSlot>)GetValue(TimeSlotsProperty); }
+            set { SetValue(TimeSlotsProperty, value); }
+        }
+
+        private static void OnTimeSlotsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Calendar)d).OnTimeSlotsChanged(e);
+        }
+
+        protected virtual void OnTimeSlotsChanged(DependencyPropertyChangedEventArgs e)
+        {
+            ApplyTemplate();
+        }
+        #endregion
+
         #region CurrentDate
 
         /// <summary>
@@ -78,7 +134,7 @@ namespace OutlookAddIn.CustomScheduler.Controls
         /// </summary>
         public static readonly DependencyProperty CurrentDateProperty =
             DependencyProperty.Register("CurrentDate", typeof(DateTime), typeof(Calendar),
-                new FrameworkPropertyMetadata((DateTime)DateTime.Now,
+                new FrameworkPropertyMetadata(DateTime.Now,
                     new PropertyChangedCallback(OnCurrentDateChanged)));
 
         /// <summary>
@@ -166,12 +222,32 @@ namespace OutlookAddIn.CustomScheduler.Controls
             e.Handled = false;
         }
 
-        protected virtual void OnExecutedNextDay(ExecutedRoutedEventArgs e)
+        protected virtual async void OnExecutedNextDay(ExecutedRoutedEventArgs e)
         {
             ClearCheckedCalendarTimeslots();
 
             CurrentDate += TimeSpan.FromDays(7);
             CurrentWeek = new CurrentWeek(CurrentDate);
+
+            //Get all timeslots by dates
+            long fromTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+                CurrentDate.Year,
+                CurrentDate.Month,
+                CurrentDate.Day,
+                00, 00, 00));
+            long toTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+                CurrentDate.AddDays(6).Year,
+                CurrentDate.AddDays(6).Month,
+                CurrentDate.AddDays(6).Day,
+                23, 59, 59));
+
+            this.TimeSlots = await apiDataAccess.GetTimeSlots(
+                FacilityID,
+                fromTicks,
+                toTicks);
+
+            CheckTimeslotsAvailability();
+
             e.Handled = true;
         }
 
@@ -191,12 +267,32 @@ namespace OutlookAddIn.CustomScheduler.Controls
             e.Handled = false;
         }
 
-        protected virtual void OnExecutedPreviousDay(ExecutedRoutedEventArgs e)
+        protected virtual async void OnExecutedPreviousDay(ExecutedRoutedEventArgs e)
         {
             ClearCheckedCalendarTimeslots();
 
             CurrentDate -= TimeSpan.FromDays(7);
             CurrentWeek = new CurrentWeek(CurrentDate);
+
+            //Get all timeslots by dates
+            long fromTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+                CurrentDate.Year,
+                CurrentDate.Month,
+                CurrentDate.Day,
+                00, 00, 00));
+            long toTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+                CurrentDate.AddDays(6).Year,
+                CurrentDate.AddDays(6).Month,
+                CurrentDate.AddDays(6).Day,
+                23, 59, 59));
+
+            this.TimeSlots = await apiDataAccess.GetTimeSlots(
+                FacilityID,
+                fromTicks,
+                toTicks);
+
+            CheckTimeslotsAvailability();
+
             e.Handled = true;
         }
 
@@ -239,7 +335,7 @@ namespace OutlookAddIn.CustomScheduler.Controls
                     if (previousTimeslot == null)
                     {
                         previousTimeslot = timeslot;
-                        startTime =new DateTime(
+                        startTime = new DateTime(
                             timeslot.TimeslotDate.Year,
                             timeslot.TimeslotDate.Month,
                             timeslot.TimeslotDate.Day,
@@ -289,6 +385,45 @@ namespace OutlookAddIn.CustomScheduler.Controls
             }
 
             return new Tuple<DateTime?, DateTime?>(null, null);
+        }
+
+        public void CheckTimeslotsAvailability()
+        {
+            if (this.TimeSlots == null) return;
+
+            var allTimeslots = DependencyObjectHelper
+                .FindVisualChildren<CalendarTimeslotItem>(this)
+                .OrderBy(x => x.TimeslotDate)
+                .ThenBy(x => x.TimeslotStart)
+                .ToList();
+
+            if (allTimeslots != null)
+            {
+                foreach (var timeslot in allTimeslots)
+                {
+                    var timeslotDate = new DateTime(
+                        timeslot.TimeslotDate.Year,
+                        timeslot.TimeslotDate.Month,
+                        timeslot.TimeslotDate.Day,
+                        Convert.ToInt32(timeslot.TimeslotStart.Substring(0, 2)),
+                        Convert.ToInt32(timeslot.TimeslotStart.Substring(3, 2)),
+                        00);
+                    var sysTimeslot = this.TimeSlots
+                        .Where(x => Utils.ConvertUnixTicksToDateTime(x.from).Equals(timeslotDate))
+                        .FirstOrDefault();
+
+                    //if (sysTimeslot == null ||
+                    //   !sysTimeslot.available)
+                    {
+                        timeslot.IsEnabled = false;
+                    }
+                    //else
+                    //{
+                    //    timeslot.IsAvailable = true;
+                    //timeslot.Focusable = false;
+                    //}
+                }
+            }
         }
         #endregion
 
@@ -360,11 +495,36 @@ namespace OutlookAddIn.CustomScheduler.Controls
             dayHeader7.Text = CurrentWeek.Day7.ToShortDateString();
         }
 
-        public override void OnApplyTemplate()
+        public override async void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             FilterAppointments();
+
+            if (this.TimeSlots == null && FacilityID > 0)
+            {
+                //Get all timeslots by dates
+                long fromTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+                    CurrentDate.Year,
+                    CurrentDate.Month,
+                    CurrentDate.Day,
+                    00, 00, 00));
+                long toTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+                    CurrentDate.AddDays(6).Year,
+                    CurrentDate.AddDays(6).Month,
+                    CurrentDate.AddDays(6).Day,
+                    23, 59, 59));
+
+                this.TimeSlots = await apiDataAccess.GetTimeSlots(
+                    FacilityID,
+                    fromTicks,
+                    toTicks);
+            }
+
+            if (this.TimeSlots != null)
+            {
+                CheckTimeslotsAvailability();
+            }
         }
     }
 }

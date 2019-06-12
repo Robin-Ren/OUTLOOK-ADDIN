@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using OutlookAddIn;
-using OutlookAddIn.CustomScheduler.Model;
 using OutlookAddIn.WebAPIClient;
-using Office = Microsoft.Office.Core;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace OutlookAddin.Domain
@@ -23,7 +15,6 @@ namespace OutlookAddin.Domain
         private DateTime _dateStart;
         private DateTime _dateEnd;
         private string _mailBody;
-        private DateTime? _futureValidatingDate;
         private Facility _selectedRoom;
         private string _selectedRecipient;
         private ObservableCollection<string> _recipients;
@@ -84,16 +75,6 @@ namespace OutlookAddin.Domain
             set
             {
                 _mailBody = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DateTime? FutureValidatingDate
-        {
-            get { return _futureValidatingDate; }
-            set
-            {
-                _futureValidatingDate = value;
                 OnPropertyChanged();
             }
         }
@@ -168,7 +149,7 @@ namespace OutlookAddin.Domain
         /// <summary>
         /// Initialize Bookings view model object
         /// </summary>
-        private async void InitializeBookingsViewModel(object sender, NagigateToBookingsArgs e)
+        private async void InitializeBookingsViewModel(object sender, BackToBookingsArgs e)
         {
             _bookingViewModel = new BookingsViewModel();
 
@@ -176,7 +157,7 @@ namespace OutlookAddin.Domain
             _bookingViewModel.Appointments = _appointments;
 
             _bookingViewModel.ClearEventInvocations("OpenNewBookingRooms");
-            BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
+            BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenRoomsDialog);
 
             CurrentViewModel = _bookingViewModel;
         }
@@ -218,11 +199,6 @@ namespace OutlookAddin.Domain
                 meetingItem.Start = this.DateStart;
                 meetingItem.End = this.DateEnd;
                 meetingItem.Subject = "Time slot to discuss Outlook Addin";
-                if (Recipients != null)
-                {
-                    foreach (var rec in Recipients)
-                        meetingItem.Recipients.Add(rec);
-                }
 
                 object missing = System.Reflection.Missing.Value;
             }
@@ -244,17 +220,16 @@ namespace OutlookAddin.Domain
 
         }
 
-        private async void OnOpenNewBookingRoomsDialog(object sender, EventArgs e)
+        private async void OnOpenRoomsDialog(object sender)
         {
             RoomsViewModel roomsModel = new RoomsViewModel();
 
             roomsModel.AvailableFacilities = await apiDataAccess.GetFacilitiesVenue();
 
-            roomsModel.ClearEventInvocations("NagigateToBookingsEvent");
-            roomsModel.ClearEventInvocations("OpenSchedulerDialogEvent");
-            RoomsViewModel.NagigateToBookingsEvent += InitializeBookingsViewModel;
-            RoomsViewModel.OpenSchedulerDialogEvent += OpenSchedulerDialog;
-
+            roomsModel.ClearEventInvocations("BackToBookingsEvent");
+            roomsModel.ClearEventInvocations("NavigateToSelectDateDialogEvent");
+            RoomsViewModel.BackToBookingsEvent += InitializeBookingsViewModel;
+            RoomsViewModel.NavigateToSelectDateDialogEvent += NavigateToSelectDateDialog;
 
             // Set the rooms as the current view model
             CurrentViewModel = roomsModel;
@@ -279,10 +254,11 @@ namespace OutlookAddin.Domain
             }
         }
 
-        private void OpenSchedulerDialog(object obj, OpenSchedulerDialogArgs e)
+        private void NavigateToSelectDateDialog(object obj, NavigateToSelectDateDialogArgs e)
         {
             _selectedRoom = e.SelectedRoom;
 
+            // Initialize the existing booked appointments
             Appointments appointmentsForSelectedFacility = new Appointments();
             if (_appointments != null)
             {
@@ -295,12 +271,32 @@ namespace OutlookAddin.Domain
                 }
             }
 
-            SchedulerViewModel schedulerViewModel = new SchedulerViewModel(appointmentsForSelectedFacility);
+            ////Get all timeslots by default dates
+            //long fromTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+            //    DateTime.Now.Year,
+            //    DateTime.Now.Month,
+            //    DateTime.Now.Day,
+            //    00, 00, 00));
+            //long toTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
+            //    DateTime.Now.AddDays(6).Year,
+            //    DateTime.Now.AddDays(6).Month,
+            //    DateTime.Now.AddDays(6).Day,
+            //    23, 59, 59));
 
-            SchedulerViewModel.NavigateToAddAppointmentEvent += new NavigateToAddAppointmentEventHandler(OnOpenNewAppointmentDialog);
+            //var timeSlots = await apiDataAccess.GetTimeSlots(
+            //    _selectedRoom.id,
+            //    fromTicks,
+            //    toTicks);
 
-            ((RoomsViewModel)CurrentViewModel).SchedulerContent = new SchedulerControl(schedulerViewModel);
-            ((RoomsViewModel)CurrentViewModel).IsSchedulerDialogOpen = true;
+            SelectMeetingDateViewModel selectDateViewModel = new SelectMeetingDateViewModel(_selectedRoom.id);
+
+            selectDateViewModel.ClearEventInvocations("BackToBookingsEvent");
+            selectDateViewModel.ClearEventInvocations("NavigateToSelectDateDialogEvent");
+            SelectMeetingDateViewModel.BackToRoomsEvent += new BackToRoomsEventHandler(OnOpenRoomsDialog);
+            //SelectMeetingDateViewModel.NavigateToTimeslotsEvent += NavigateToSelectDateDialog;
+
+            // Set the select date view model as the current view model
+            CurrentViewModel = selectDateViewModel;
         }
 
         private void OnOpenNewAppointmentDialog(object sender, NavigateToAddAppointmentEventArgs e)
@@ -308,7 +304,7 @@ namespace OutlookAddin.Domain
             AppointmentViewModel appointmentModel = new AppointmentViewModel();
 
             appointmentModel.ClearEventInvocations("NavigateToBookingRooms");
-            AppointmentViewModel.NavigateToBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenNewBookingRoomsDialog);
+            AppointmentViewModel.NavigateToBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenRoomsDialog);
 
             // Set the rooms as the current view model
             CurrentViewModel = appointmentModel;

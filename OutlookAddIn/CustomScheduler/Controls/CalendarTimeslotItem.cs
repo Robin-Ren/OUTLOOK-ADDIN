@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
+using System.Runtime.Caching;
+using OutlookAddin.Domain;
 
 namespace OutlookAddIn.CustomScheduler.Controls
 {
@@ -69,9 +71,28 @@ namespace OutlookAddIn.CustomScheduler.Controls
 
         #endregion
 
+        #region IsAvailable
+
+        public static readonly DependencyProperty IsAvailableProperty =
+            DependencyProperty.Register("IsAvailable", typeof(bool), typeof(CalendarTimeslotItem),
+                new FrameworkPropertyMetadata(true));
+
+        public bool IsAvailable
+        {
+            get { return (bool)GetValue(IsAvailableProperty); }
+            set { SetValue(IsAvailableProperty, value); }
+        }
+
+        #endregion
+
         static CalendarTimeslotItem()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CalendarTimeslotItem), new FrameworkPropertyMetadata(typeof(CalendarTimeslotItem)));
+
+            //// First, try getting timeslots from cache
+            //var itemFound = Calendar.AllTimeSlots
+            //    .Where(x => x.name.Substring(0, 5).Equals(TimeslotStart));
+            //IsAvailableProperty
         }
 
         #region AddAppointment
@@ -106,7 +127,10 @@ namespace OutlookAddIn.CustomScheduler.Controls
 
         protected override void OnClick()
         {
-            this.IsChecked = !this.IsChecked;
+            if (this.IsEnabled)
+            {
+                this.IsChecked = !this.IsChecked;
+            }
         }
     }
 }

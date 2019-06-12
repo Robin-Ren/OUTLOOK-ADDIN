@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using OutlookAddIn.CustomScheduler.Model;
+﻿using System.Windows.Input;
 
 namespace OutlookAddin.Domain
 {
-    public delegate void NagigateToBookingsEventHandler(object sender, NagigateToBookingsArgs e);
-    public delegate void OpenSchedulerDialogEventHandler(object sender, OpenSchedulerDialogArgs e);
+    public delegate void BackToBookingsEventHandler(object sender, BackToBookingsArgs e);
+    public delegate void NavigateToSelectDateDialogEventHandler(object sender, NavigateToSelectDateDialogArgs e);
 
     public class RoomsViewModel : ABaseViewModel
     {
@@ -17,8 +11,8 @@ namespace OutlookAddin.Domain
         {
             _facilities = new ObservableCollectionWrapper<Facility>();
 
-            NagigateToBookingsDialogCommand = new RelayCommand(NagigateToBookingsControl);
-            OpenSchedulerDialogCommand = new RelayCommand(OpenSchedulerDialog);
+            BackToBookingsDialogCommand = new RelayCommand(BackToBookingsControl);
+            NavigateToSelectDateDialogCommand = new RelayCommand(NavigateToSelectDateDialog);
             AcceptSchedulerDialogCommand = new RelayCommand(AcceptSchedulerDialog);
             CancelSchedulerDialogCommand = new RelayCommand(CancelSchedulerDialog);
         }
@@ -70,52 +64,51 @@ namespace OutlookAddin.Domain
         /// <summary>
         /// Raised opening new booking rooms button is pressed.
         /// </summary>
-        public static event NagigateToBookingsEventHandler NagigateToBookingsEvent;
+        public static event BackToBookingsEventHandler BackToBookingsEvent;
 
         /// <summary>
-        /// Raises the NagigateToBookings event
+        /// Raises the NavigateToBookings event
         /// </summary>
-        protected void OnNagigateToBookings()
+        protected void OnBackToBookings()
         {
-            NagigateToBookingsEvent?.Invoke(this, new NagigateToBookingsArgs());
+            BackToBookingsEvent?.Invoke(this, new BackToBookingsArgs());
         }
 
         /// <summary>
         /// Raised when a meeting room is selected.
         /// </summary>
-        public static event OpenSchedulerDialogEventHandler OpenSchedulerDialogEvent;
+        public static event NavigateToSelectDateDialogEventHandler NavigateToSelectDateDialogEvent;
 
         /// <summary>
         /// Raises the OpenSchedulerDialogEventHandler event
         /// </summary>
-        protected void OnOpenSchedulerDialog(OpenSchedulerDialogArgs e)
+        protected void OnNavigateToSelectDateDialog(NavigateToSelectDateDialogArgs e)
         {
-            OpenSchedulerDialogEvent?.Invoke(this, e);
+            NavigateToSelectDateDialogEvent?.Invoke(this, e);
         }
         #endregion
 
         #region Commands
-        public ICommand NagigateToBookingsDialogCommand { get; set; }
-        public ICommand OpenSchedulerDialogCommand { get; }
+        public ICommand BackToBookingsDialogCommand { get; set; }
+        public ICommand NavigateToSelectDateDialogCommand { get; }
         public ICommand AcceptSchedulerDialogCommand { get; }
         public ICommand CancelSchedulerDialogCommand { get; }
         #endregion
 
         #region Command Implementations
-        private void NagigateToBookingsControl(object obj)
+        private void BackToBookingsControl(object obj)
         {
-            // Just raise the OnNagigateToBookings Event
-            OnNagigateToBookings();
+            OnBackToBookings();
         }
 
-        private void OpenSchedulerDialog(object obj)
+        private void NavigateToSelectDateDialog(object obj)
         {
-            OpenSchedulerDialogArgs e = new OpenSchedulerDialogArgs
+            NavigateToSelectDateDialogArgs e = new NavigateToSelectDateDialogArgs
             {
                 SelectedRoom = obj as Facility
             };
 
-            OnOpenSchedulerDialog(e);
+            OnNavigateToSelectDateDialog(e);
         }
 
         private void CancelSchedulerDialog(object obj)

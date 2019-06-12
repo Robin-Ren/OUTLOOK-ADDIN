@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
-             xmlns:scheduler="clr-namespace:OutlookAddIn.CustomScheduler.Controls"
-             xmlns:schedulerModel="clr-namespace:OutlookAddIn.CustomScheduler.Model"
              xmlns:viewModel="clr-namespace:OutlookAddin.Domain"
              xmlns:view="clr-namespace:OutlookAddIn"
              mc:Ignorable="d" 
@@ -43,7 +41,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Calendar.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/OutlookAddIn;component/CustomScheduler/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Color x:Key="Primary500Foreground">#DDFFFFFF</Color>
             <Color x:Key="Primary400">#8d6e63</Color>
@@ -53,11 +50,14 @@
             <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
                 <view:LoginControl />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:BookingsViewModel}">
+                <view:BookingsControl />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewModel:RoomsViewModel}">
                 <view:RoomsControl />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModel:BookingsViewModel}">
-                <view:BookingsControl />
+            <DataTemplate DataType="{x:Type viewModel:SelectMeetingDateViewModel}">
+                <view:SelectDateControl />
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModel:AppointmentViewModel}">
                 <view:AppointmentDetailsControl />

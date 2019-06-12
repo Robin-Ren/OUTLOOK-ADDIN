@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using OutlookAddIn.CustomScheduler.Controls;
-using OutlookAddIn.CustomScheduler.Model;
 
 namespace OutlookAddin.Domain
 {
@@ -33,6 +31,33 @@ namespace OutlookAddin.Domain
                 OnPropertyChanged();
             }
         }
+
+        private ObservableCollectionWrapper<TimeSlot> _timeslots;
+
+        public ObservableCollectionWrapper<TimeSlot> TimeSlots
+        {
+            get { return _timeslots; }
+            set
+            {
+                if (_timeslots == value) return;
+                _timeslots = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private int _facilityId;
+
+        public int FacilityID
+        {
+            get { return _facilityId; }
+            set
+            {
+                if (_facilityId == value) return;
+                _facilityId = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Events
@@ -42,7 +67,7 @@ namespace OutlookAddin.Domain
         public static event NavigateToAddAppointmentEventHandler NavigateToAddAppointmentEvent;
 
         /// <summary>
-        /// Raises the NagigateToBookings event
+        /// Raises the NavigateToBookings event
         /// </summary>
         protected void OnNavigateToAddAppointment(NavigateToAddAppointmentEventArgs args)
         {
@@ -59,20 +84,20 @@ namespace OutlookAddin.Domain
 
         private void NavigateToAddAppointment(object obj)
         {
-            var calendarObj = obj as Calendar;
-            var timeslots = calendarObj.GetSelectedTimeslots();
+            //var calendarObj = obj as Calendar;
+            //var timeslots = calendarObj.GetSelectedTimeslots();
 
-            if (timeslots == null ||
-               !timeslots.Item1.HasValue ||
-               !timeslots.Item2.HasValue)
-                return;
+            //if (timeslots == null ||
+            //   !timeslots.Item1.HasValue ||
+            //   !timeslots.Item2.HasValue)
+            //    return;
 
-            var args = new NavigateToAddAppointmentEventArgs
-            {
-                StartTimeslot = timeslots.Item1.Value,
-                EndTimeslot = timeslots.Item2.Value
-            };
-            OnNavigateToAddAppointment(args);
+            //var args = new NavigateToAddAppointmentEventArgs
+            //{
+            //    StartTimeslot = timeslots.Item1.Value,
+            //    EndTimeslot = timeslots.Item2.Value
+            //};
+            //OnNavigateToAddAppointment(args);
         }
         #endregion
     }

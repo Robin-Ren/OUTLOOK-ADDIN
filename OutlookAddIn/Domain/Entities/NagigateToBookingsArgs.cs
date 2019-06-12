@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OutlookAddin.Domain
 {
-    public class NagigateToBookingsArgs
+    public class BackToBookingsArgs
     {
     }
 }

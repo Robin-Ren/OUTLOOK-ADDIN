@@ -67,7 +67,6 @@ namespace OutlookAddIn.CustomScheduler.Controls
 
         #endregion
 
-
         protected override Size MeasureOverride(Size availableSize)
         {
             // Calculate size based on duration?

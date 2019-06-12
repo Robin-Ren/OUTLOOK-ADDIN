@@ -35,7 +35,7 @@
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.95</ApplicationVersion>
+    <ApplicationVersion>1.0.0.16</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -126,6 +126,9 @@
   -->
   <ItemGroup>
     <Reference Include="Accessibility" />
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -156,6 +159,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
@@ -206,8 +210,8 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="CustomScheduler\Controls\ValueConverters.cs" />
-    <Compile Include="CustomScheduler\Model\TimeslotExtensions.cs" />
+    <Compile Include="Domain\Core\EpochTimeExtensions.cs" />
+    <Compile Include="Domain\Core\FutureDateValidationRule.cs" />
     <Compile Include="Domain\Core\GlobalConstants.cs" />
     <Compile Include="Domain\Core\IsCheckedValidationRule.cs" />
     <Compile Include="Domain\Core\MessageBoxCloser.cs" />
@@ -219,41 +223,34 @@
     <Compile Include="Domain\Core\ViewModelExtensions.cs" />
     <Compile Include="Domain\Core\WindowDialogService.cs" />
     <Compile Include="Domain\Entities\AddAppointmentEventArgs.cs" />
+    <Compile Include="Domain\Entities\Appointment.cs" />
     <Compile Include="Domain\Entities\AuthenticationResult.cs" />
+    <Compile Include="Domain\Entities\BindableObject.cs" />
     <Compile Include="Domain\Entities\CoreEntities.cs" />
     <Compile Include="Domain\Entities\GetBookingDetailsResult.cs" />
     <Compile Include="Domain\Entities\GetFacilitiesResult.cs" />
     <Compile Include="Domain\Entities\LoginEventArgs.cs" />
     <Compile Include="Domain\Entities\NagigateToBookingsArgs.cs" />
     <Compile Include="Domain\Entities\NavigateToAddAppointmentEventArgs.cs" />
+    <Compile Include="Domain\Entities\NavigateToConfirmAppointmentArgs.cs" />
+    <Compile Include="Domain\Entities\NavigateToTimeslotsArgs.cs" />
     <Compile Include="Domain\Entities\OpenSchedulerDialogArgs.cs" />
+    <Compile Include="Domain\Entities\TimeSlot.cs" />
     <Compile Include="Domain\Models\ABaseViewModel.cs" />
     <Compile Include="Domain\Models\AppointmentViewModel.cs" />
     <Compile Include="Domain\Models\BookingsViewModel.cs" />
     <Compile Include="Domain\Models\LoginViewModel.cs" />
     <Compile Include="Domain\Models\MeetingAddinViewModel.cs" />
-    <Compile Include="Domain\Models\Room.cs" />
+    <Compile Include="Domain\Entities\Room.cs" />
+    <Compile Include="Domain\Models\SelectableViewModel.cs" />
+    <Compile Include="Domain\Models\SelectMeetingDateViewModel.cs" />
     <Compile Include="Domain\Models\RoomsViewModel.cs" />
     <Compile Include="Domain\Models\SchedulerViewModel.cs" />
-    <Compile Include="Domain\Models\SelectableViewModel.cs" />
     <Compile Include="Domain\Models\WindowDialogViewModel.cs" />
     <Compile Include="Domain\WebAPIClient\WebAPIDataAccess.cs" />
     <Compile Include="Views\AppointmentDetails.xaml.cs">
       <DependentUpon>AppointmentDetails.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomScheduler\Controls\Calendar.cs" />
-    <Compile Include="CustomScheduler\Controls\CalendarAppointmentItem.cs" />
-    <Compile Include="CustomScheduler\Controls\CalendarDay.cs" />
-    <Compile Include="CustomScheduler\Controls\CalendarLedger.cs" />
-    <Compile Include="CustomScheduler\Controls\CalendarLedgerItem.cs" />
-    <Compile Include="CustomScheduler\Controls\CalendarTimeslotItem.cs" />
-    <Compile Include="CustomScheduler\Controls\CurrentWeek.cs" />
-    <Compile Include="CustomScheduler\Controls\Filters.cs" />
-    <Compile Include="CustomScheduler\Controls\TimeslotPanel.cs" />
-    <Compile Include="CustomScheduler\Model\Appointment.cs" />
-    <Compile Include="CustomScheduler\Model\Appointments.cs" />
-    <Compile Include="CustomScheduler\Model\BindableObject.cs" />
-    <Compile Include="CustomScheduler\Model\DependencyObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -262,6 +259,9 @@
     </Compile>
     <Compile Include="Views\LoginControl.xaml.cs">
       <DependentUpon>LoginControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectDateControl.xaml.cs">
+      <DependentUpon>SelectDateControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Scheduler.xaml.cs">
       <DependentUpon>Scheduler.xaml</DependentUpon>
@@ -296,7 +296,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="CustomScheduler\Model\Model.cd" />
+    <Compile Include="Domain\Entities\GetTimeslotsResult.cs" />
     <None Include="OutlookAddIn1_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -336,15 +336,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomScheduler\Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\EmptyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Views\LoginControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SelectDateControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -194,7 +194,7 @@ namespace OutlookAddin.Domain
         public int? slotDuration { get; set; }
     }
 
-    public class Entity
+    public class BookingDetail
     {
         public int version { get; set; }
         public int id { get; set; }

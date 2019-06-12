@@ -16,11 +16,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
 using OutlookAddin.Domain;
-using OutlookAddIn.CustomScheduler;
-using OutlookAddIn.CustomScheduler.Model;
-using Office = Microsoft.Office.Core;
-using Outlook = Microsoft.Office.Interop.Outlook;
-using Word = Microsoft.Office.Interop.Word;
 
 namespace OutlookAddIn
 {

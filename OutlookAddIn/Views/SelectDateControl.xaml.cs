@@ -20,18 +20,20 @@ using OutlookAddin.Domain;
 namespace OutlookAddIn
 {
     /// <summary>
-    /// BookingsControl.xaml
+    /// SelectDateControl.xaml
     /// </summary>
-    public partial class BookingsControl : UserControl
+    public partial class SelectDateControl : UserControl
     {
-        public BookingsControl()
+        public SelectDateControl()
         {
             InitializeComponent();
+            FutureDatePicker.BlackoutDates.AddDatesInPast();
         }
 
         private void CanOpenDialog(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
+
     }
 }

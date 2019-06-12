@@ -61,9 +61,10 @@
                             <Setter Property="Background" TargetName="bd" Value="#CE881B"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" TargetName="bd" Value="#FFF4F4F4"/>
-                            <Setter Property="BorderBrush" TargetName="bd" Value="#FFADB2B5"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#CE881B"/>
+                            <Setter Property="Background" TargetName="bd" Value="#FFB2B5B7"/>
+                            <Setter Property="BorderBrush" TargetName="bd" Value="#FFB2B5B7"/>
+                            <Setter Property="IsEnabled" TargetName="bd" Value="False"/>
+                            <Setter Property="IsHitTestVisible" TargetName="bd" Value="False"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
