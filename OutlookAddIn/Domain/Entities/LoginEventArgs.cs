@@ -20,6 +20,6 @@ namespace OutlookAddin.Domain
         [JsonProperty("condoCode")]
         public string CondoCode { get; set; } = "HAC";
         [JsonProperty("rememberMe")]
-        public int? RememberMe { get; set; } = 1;
+        public bool? RememberMe { get; set; } = false;
     }
 }

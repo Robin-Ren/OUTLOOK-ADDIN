@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OutlookAddin.Domain
 {
-    public class TimeSlot : ABaseViewModel
+    public class TimeSlot : ABaseViewModel, IComparable
     {
         private long _from;
         private long _to;
@@ -137,5 +137,17 @@ namespace OutlookAddin.Domain
                 OnPropertyChanged();
             }
         }
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            var timeslot = obj as TimeSlot;
+
+            if (this.from > timeslot.from) return 1;
+            if (this.from == timeslot.from) return 0;
+            return -1;
+        }
+        #endregion
     }
 }

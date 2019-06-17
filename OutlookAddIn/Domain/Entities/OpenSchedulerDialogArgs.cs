@@ -8,6 +8,6 @@ namespace OutlookAddin.Domain
 {
     public class NavigateToSelectDateDialogArgs
     {
-        public Facility SelectedRoom { get; set; }
+        public Facility SelectedFacility { get; set; }
     }
 }

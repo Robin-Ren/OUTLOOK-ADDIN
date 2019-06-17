@@ -6,21 +6,45 @@ using System.Windows.Input;
 
 namespace OutlookAddin.Domain
 {
-    public delegate void AddAppointmentEventHandler(object sender, AddAppointmentEventArgs e);
+    public delegate void AddAppointmentEventHandler(object sender, SaveBookingRequestArgs e);
+    public delegate void BackToSelectDateEventHandler(object sender);
 
     public class AppointmentViewModel : ABaseViewModel
     {
         #region Properties
-
-        private string subject;
-        public string Subject 
+        private Facility _selectedFacility;
+        public Facility SelectedFacility
         {
-            get { return subject; }
+            get { return _selectedFacility; }
             set
             {
-                if (subject != value)
+                if (_selectedFacility != value)
                 {
-                    subject = value;
+                    _selectedFacility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string SelectedFacilityName
+        {
+            get
+            {
+                if (SelectedFacility == null)
+                    return string.Empty;
+                return SelectedFacility.name;
+            }
+        }
+
+        private string remarks;
+        public string Remarks 
+        {
+            get { return remarks; }
+            set
+            {
+                if (remarks != value)
+                {
+                    remarks = value;
                     OnPropertyChanged();
                 }
             }
@@ -99,20 +123,34 @@ namespace OutlookAddin.Domain
 
         public override string ToString()
         {
-            return Subject;
+            return Remarks;
+        }
+
+        private string errorMessage;
+        public string ErrorMessage
+        {
+            get { return errorMessage; }
+            set
+            {
+                if (errorMessage != value)
+                {
+                    errorMessage = value;
+                    OnPropertyChanged();
+                }
+            }
         }
         #endregion
 
         #region Commands
         public ICommand AddAppointmentCommand { get; set; }
-        public ICommand OpenNewBookingRoomsDialogCommand { get; set; }
+        public ICommand BackToSelectDateDialogCommand { get; set; }
         #endregion
 
         #region Events
         public AppointmentViewModel()
         {
-            AddAppointmentCommand = new RelayCommand(OpenAddAppointmentDialog);
-            OpenNewBookingRoomsDialogCommand = new RelayCommand(OpenNewBookingRoomsControl);
+            AddAppointmentCommand = new RelayCommand(AddAppointment);
+            BackToSelectDateDialogCommand = new RelayCommand(BackToSelectDateControl);
         }
 
         /// <summary>
@@ -125,34 +163,38 @@ namespace OutlookAddin.Domain
         /// </summary>
         protected void OnAddAppointment()
         {
-            AddAppointmentEvent?.Invoke(this, new AddAppointmentEventArgs());
+            AddAppointmentEvent?.Invoke(
+                this,
+                new SaveBookingRequestArgs
+                {
+                    requestRemark = this.remarks
+                });
         }
 
         /// <summary>
         /// Raised opening new booking rooms button is pressed.
         /// </summary>
-        public static event OpenNewBookingRoomsEventHandler NavigateToBookingRooms;
+        public static event BackToSelectDateEventHandler BackToSelectDate;
 
         /// <summary>
         /// Raises the OnNavigateToBookingRooms event
         /// </summary>
-        protected void OnNavigateToBookingRooms()
+        protected void OnBackToSelectDate()
         {
-            NavigateToBookingRooms?.Invoke(this);
+            BackToSelectDate?.Invoke(this);
         }
         #endregion
 
         #region Command Implementations
-        private void OpenAddAppointmentDialog(object obj)
+        private void AddAppointment(object obj)
         {
             OnAddAppointment();
-
         }
 
-        private void OpenNewBookingRoomsControl(object obj)
+        private void BackToSelectDateControl(object obj)
         {
             // Just raise the OnOpenNewBookingRooms Event
-            OnNavigateToBookingRooms();
+            OnBackToSelectDate();
         }
         #endregion
     }

@@ -21,7 +21,7 @@
     </UserControl.DataContext>-->
 
     <UserControl.Background>
-        <ImageBrush TileMode="None" ImageSource="pack://application:,,,/OutlookAddIn;component/Images/LoginBg.jpg" Stretch="UniformToFill" />
+        <ImageBrush TileMode="None" ImageSource="pack://application:,,,/OutlookAddIn;component/Images/LoginBgCropped.jpg" Stretch="UniformToFill" />
     </UserControl.Background>
 
     <UserControl.Resources>
@@ -87,16 +87,21 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <TextBox Opacity="1" materialDesign:HintAssist.Hint="User ID" materialDesign:HintAssist.IsFloating="True"
-                                 Margin="0,12,0,39.6" Grid.ColumnSpan="2"
-                                     Text="{Binding UserName, Mode=OneWayToSource}" Grid.RowSpan="2"/>
-                            <PasswordBox Grid.Row="1" materialDesign:HintAssist.Hint="Password" materialDesign:HintAssist.IsFloating="True"
+                            <TextBox Opacity="1" materialDesign:HintAssist.Hint="User ID"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                     Margin="0,12,0,39.6" Grid.ColumnSpan="2"
+                                     Text="{Binding UserName, Mode=OneWayToSource}"
+                                     Grid.RowSpan="2"/>
+                            <PasswordBox Grid.Row="1"
+                                         materialDesign:HintAssist.Hint="Password"
                                          PasswordChanged="PasswordBox_PasswordChanged"
-                                 Margin="0,12.8,0,40" Grid.ColumnSpan="2"
-                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" Grid.RowSpan="2"/>
+                                         Margin="0,12.8,0,40" Grid.ColumnSpan="2"
+                                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
+                                         Grid.RowSpan="2"/>
                             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,13.4,0,0" HorizontalAlignment="Right" Grid.ColumnSpan="2" Width="145">
                                 <TextBlock VerticalAlignment="Center">Remember me</TextBlock>
                                 <ToggleButton Margin="8 0 0 0"
+                                              IsChecked="{Binding RememberMe, Mode=TwoWay}"
                                               ></ToggleButton>
                             </StackPanel>
                             <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="-2,12,0,1.6" HorizontalAlignment="Right" Grid.ColumnSpan="2" Width="174">

@@ -18,10 +18,13 @@ namespace OutlookAddin.Domain
         /// </summary>
         public static readonly string ErrorLogFile = @"OutlookAddin.log";
 
+        #region Cache Keys
         /// <summary>
         /// TimeSlots_{FacilityID}_{fromTicks}_{toTicks}
         /// </summary>
         public static readonly string TimeSlotCacheKey = "TimeSlots_{0}_{1}_{2}";
+
+        #endregion
 
         #region Connection Strings
         public static readonly string OutlookAddinConnectionStringName = "OutlookAddinConnectionString";

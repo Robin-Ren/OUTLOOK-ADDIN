@@ -45,7 +45,8 @@ namespace OutlookAddin.Domain
             LoginEventArgs loginArgs = new LoginEventArgs
             {
                 UserName = loginModel.UserName,
-                Password = loginModel.Password
+                Password = loginModel.Password,
+                RememberMe = loginModel.RememberMe
             };
 
             // Just raise the OnLogin Event
@@ -56,7 +57,7 @@ namespace OutlookAddin.Domain
         #region Properties
         private string _userName;
         private string _password;
-        private int _rememberMe;
+        private bool _rememberMe;
         private bool _isSucceeded;
         private string _loginMessage;
 
@@ -80,7 +81,7 @@ namespace OutlookAddin.Domain
             }
         }
 
-        public int RememberMe
+        public bool RememberMe
         {
             get { return _rememberMe; }
             set

@@ -63,12 +63,13 @@ namespace OutlookAddIn.WebAPIClient
             return true;
         }
 
-        public async Task<Appointments> GetBookingRecords()
+        public async Task<List<BookingDetail>> GetBookingRecords(bool isParent)
         {
             try
             {
                 // HTTP GET
-                var response = await client.GetAsync(String.Format("api/condos/{0}/booking-details?isCurrent=false&viewFormat=EXTMAX", GlobalConstants.WebApiCondoId));
+                var response = await client.GetAsync(String.Format("api/condos/{0}/booking-details?isCurrent={1}&viewFormat=EXTMAX", GlobalConstants.WebApiCondoId,
+                    isParent ? "true" : "false"));
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -81,27 +82,7 @@ namespace OutlookAddIn.WebAPIClient
                         return null;
                     }
 
-                    var appointments = new Appointments();
-                    appointments.Clear();
-
-                    foreach (var entity in bookingDetailsResult.entities)
-                    {
-                        if (entity.facilityBooking != null)
-                        {
-                            var appointment = new Appointment
-                            {
-                                Subject = string.Format("{0} - {1}",
-                                        entity.facilityBooking.requestNo,
-                                        entity.facilityBooking.facility.name),
-                                FacilityID = entity.facilityBooking.facility.id,
-                                StartTime = Utils.ConvertUnixTicksToDateTime(entity.facilityBooking.requestedStartDate.Value),
-                                EndTime = Utils.ConvertUnixTicksToDateTime(entity.facilityBooking.requestedEndDate.Value),
-                            };
-                            appointments.Add(appointment);
-                        }
-                    }
-
-                    return appointments;
+                    return bookingDetailsResult.entities;
                 }
             }
             catch (Exception ex)
@@ -207,7 +188,7 @@ namespace OutlookAddIn.WebAPIClient
             return null;
         }
 
-        public async Task<bool> SaveBookingRequest(SaveBookingRequestArgs args)
+        public async Task<string> SaveBookingRequest(SaveBookingRequestArgs args)
         {
             StringContent content = new StringContent(JsonConvert.SerializeObject(args), Encoding.UTF8, "application/json");
             // HTTP POST
@@ -220,10 +201,10 @@ namespace OutlookAddIn.WebAPIClient
             }
             else
             {
-                return false;
+                return string.Format("Failed to save the booking. Response: {0}", response.ReasonPhrase);
             }
 
-            return true;
+            return string.Empty;
         }
     }
 }

@@ -35,7 +35,7 @@
     <PublishUrl>C:\Users\Robin\Desktop\AddIn\</PublishUrl>
     <InstallUrl>\\AddIn\admin\</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.16</ApplicationVersion>
+    <ApplicationVersion>1.0.0.50</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -96,6 +96,7 @@
     <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <!--
     This section defines properties that are set when the "Release" configuration is selected.
@@ -219,10 +220,11 @@
     <Compile Include="Domain\Core\NotifyPropertyChangedExtension.cs" />
     <Compile Include="Domain\Core\ObservableCollectionWrapper.cs" />
     <Compile Include="Domain\Core\RelayCommand.cs" />
+    <Compile Include="Domain\Core\TimeslotComparer.cs" />
+    <Compile Include="Domain\Core\TimeslotExtensions.cs" />
     <Compile Include="Domain\Core\Utils.cs" />
     <Compile Include="Domain\Core\ViewModelExtensions.cs" />
     <Compile Include="Domain\Core\WindowDialogService.cs" />
-    <Compile Include="Domain\Entities\AddAppointmentEventArgs.cs" />
     <Compile Include="Domain\Entities\Appointment.cs" />
     <Compile Include="Domain\Entities\AuthenticationResult.cs" />
     <Compile Include="Domain\Entities\BindableObject.cs" />
@@ -241,7 +243,6 @@
     <Compile Include="Domain\Models\BookingsViewModel.cs" />
     <Compile Include="Domain\Models\LoginViewModel.cs" />
     <Compile Include="Domain\Models\MeetingAddinViewModel.cs" />
-    <Compile Include="Domain\Entities\Room.cs" />
     <Compile Include="Domain\Models\SelectableViewModel.cs" />
     <Compile Include="Domain\Models\SelectMeetingDateViewModel.cs" />
     <Compile Include="Domain\Models\RoomsViewModel.cs" />
@@ -400,7 +401,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\LoginBgCropped.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

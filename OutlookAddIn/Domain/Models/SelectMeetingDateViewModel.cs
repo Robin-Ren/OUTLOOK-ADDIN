@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 using OutlookAddIn.WebAPIClient;
 
@@ -14,11 +15,12 @@ namespace OutlookAddin.Domain
             // Initialize WebAPI Client
             apiDataAccess = new WebAPIDataAccess();
             FacilityID = facilityId;
-            SelectedDate = DateTime.Now;
 
             NavigateToConfirmAppointmentDialogCommand = new RelayCommand(NavigateToConfirmAppointmentControl);
             BackToRoomsCommand = new RelayCommand(BackToRoomsControl);
             SelectTimeslotCommand = new RelayCommand(SelectTimeSlot);
+
+            OnSelectedDateChanged();
         }
 
         #region Properties
@@ -64,6 +66,33 @@ namespace OutlookAddin.Domain
                 if (_timeSlotsOfSelectedDate == value) return;
                 _timeSlotsOfSelectedDate = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private List<BookingDetail> _parentAppointmentDetails;
+
+        public List<BookingDetail> ParentAppointmentDetails
+        {
+            get
+            {
+                return _parentAppointmentDetails;
+            }
+            set
+            {
+                _parentAppointmentDetails = value;
+            }
+        }
+
+        private List<BookingDetail> _childAppointmentDetails;
+        public List<BookingDetail> ChildAppointmentDetails
+        {
+            get
+            {
+                return _childAppointmentDetails;
+            }
+            set
+            {
+                _childAppointmentDetails = value;
             }
         }
         #endregion
@@ -115,11 +144,36 @@ namespace OutlookAddin.Domain
 
         private void SelectTimeSlot(object obj)
         {
-            var timeslot = obj as TimeSlot;
-
-            if (timeslot != null)
+            if (obj is TimeSlot timeslot)
             {
-                timeslot.isSelected = !timeslot.isSelected;
+                OnSelectTimeSlot(timeslot);
+            }
+        }
+
+        private void OnSelectTimeSlot(TimeSlot timeslot)
+        {
+            if (timeslot.isSelected)
+            {
+                var selectedTimeslots = GetSelectedTimeSlots();
+
+                foreach (var selectedTimeslot in selectedTimeslots)
+                {
+                    if (selectedTimeslot.CompareTo(timeslot) >= 0)
+                    {
+                        selectedTimeslot.isSelected = false;
+                    }
+                }
+            }
+            else
+            {
+                // Check continuance
+                var selectedTimeslotsStartEnd = GetSelectedStartEndTimeslots();
+                if (selectedTimeslotsStartEnd.Item1 == null ||
+                    timeslot.IsAdjacentAfter(selectedTimeslotsStartEnd.Item2) ||
+                    selectedTimeslotsStartEnd.Item1.IsAdjacentAfter(timeslot))
+                {
+                    timeslot.isSelected = !timeslot.isSelected;
+                }
             }
         }
 
@@ -128,6 +182,8 @@ namespace OutlookAddin.Domain
             if (TimeSlotsOfSelectedDate != null)
                 TimeSlotsOfSelectedDate.Clear();
             IsLoading = true;
+
+            ClearSelectedTimeSlots();
 
             //Get all timeslots by selected date
             long fromTicks = new DateTime(
@@ -144,7 +200,21 @@ namespace OutlookAddin.Domain
                 toTicks);
             foreach (var ts in TimeSlotsOfSelectedDate)
             {
-                ts.status = ts.from.ToSingaporeDateTimeFromEpoch().ToString("yyyy/MM/dd hh:mm:ss");
+                ts.status = ts.available
+                    ? "Available"
+                    : "Inavailable";
+
+                if (ParentAppointmentDetails != null && ParentAppointmentDetails.Count > 0)
+                {
+                    var foundAptmnt = ParentAppointmentDetails
+                        .Find(x => x.facilityBooking.facility.id == this.FacilityID &&
+                        x.from.Value == ts.from);
+                    if (foundAptmnt != null && foundAptmnt.status.ToUpper() == "APPROVED")
+                    {
+                        ts.available = false;
+                        ts.status = string.Format("Ocuppied by {0}", foundAptmnt.createdBy);
+                    }
+                }
             }
 
             if (TimeSlotsOfSelectedDate != null &&
@@ -154,5 +224,80 @@ namespace OutlookAddin.Domain
             }
         }
         #endregion
+
+        public List<TimeSlot> GetSelectedTimeSlots()
+        {
+            var listTimeSlotsOfSelectedDate = new List<TimeSlot>(_timeSlotsOfSelectedDate);
+            var checkedTimeslots = listTimeSlotsOfSelectedDate
+                .FindAll(x => x.available
+                && x.isSelected);
+            checkedTimeslots.Sort(new TimeslotComparer());
+
+            return checkedTimeslots;
+        }
+
+        public void ClearSelectedTimeSlots()
+        {
+            if (_timeSlotsOfSelectedDate == null || _timeSlotsOfSelectedDate.Count == 0)
+                return;
+
+            var listTimeSlotsOfSelectedDate = new List<TimeSlot>(_timeSlotsOfSelectedDate);
+            var selectedTimeslots = listTimeSlotsOfSelectedDate
+                .FindAll(x => x.available
+                && x.isSelected);
+
+            if (selectedTimeslots != null && selectedTimeslots.Count > 0)
+            {
+                foreach (var ts in selectedTimeslots)
+                {
+                    ts.isSelected = false;
+                }
+            }
+        }
+
+        public Tuple<TimeSlot, TimeSlot> GetSelectedStartEndTimeslots()
+        {
+            var selectedTimeslots = GetSelectedTimeSlots();
+
+            if (selectedTimeslots != null && selectedTimeslots.Count > 0)
+            {
+                TimeSlot startTimeSlot = null;
+                TimeSlot endTimeSlot = null;
+                TimeSlot previousTimeslot = null;
+
+                var last = selectedTimeslots[selectedTimeslots.Count - 1];
+                foreach (var timeslot in selectedTimeslots)
+                {
+                    var dtTimeslot = timeslot.from.ToSingaporeDateTimeFromEpoch();
+                    if (previousTimeslot == null)
+                    {
+                        previousTimeslot = timeslot;
+                        startTimeSlot = timeslot;
+                        endTimeSlot = timeslot;
+                    }
+                    else if (timeslot.Equals(last))
+                    {
+                        endTimeSlot = timeslot;
+                    }
+                    else
+                    {
+                        if (timeslot.IsAdjacentAfter(previousTimeslot))
+                        {
+                            previousTimeslot = timeslot;
+                        }
+                        else
+                        {
+                            endTimeSlot = timeslot;
+
+                            break;
+                        }
+                    }
+                }
+
+                return new Tuple<TimeSlot, TimeSlot>(startTimeSlot, endTimeSlot);
+            }
+
+            return new Tuple<TimeSlot, TimeSlot>(null, null);
+        }
     }
 }

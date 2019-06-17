@@ -15,9 +15,9 @@ namespace OutlookAddin.Domain
 
     public class SaveBookingRequestArgs
     {
-        public Facility facility { get; set; }
+        public SaveBookingParamFacility facility { get; set; }
         public string paymentType { get; set; } = "COMPANY";
         public string requestRemark { get; set; }
-        public List<BookingDetail> bookingDetails { get; set; }
+        public List<SaveBookingParamBookingDetail> bookingDetails { get; set; }
     }
 }

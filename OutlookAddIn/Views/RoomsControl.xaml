@@ -50,7 +50,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
-                            Command="{Binding Path=NavigateToBookingsDialogCommand}"
+                            Command="{Binding Path=BackToBookingsDialogCommand}"
                             HorizontalAlignment="Right">
                         <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Left" />
                     </Button>

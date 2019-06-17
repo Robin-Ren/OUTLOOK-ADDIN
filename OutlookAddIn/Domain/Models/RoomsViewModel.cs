@@ -105,7 +105,7 @@ namespace OutlookAddin.Domain
         {
             NavigateToSelectDateDialogArgs e = new NavigateToSelectDateDialogArgs
             {
-                SelectedRoom = obj as Facility
+                SelectedFacility = obj as Facility
             };
 
             OnNavigateToSelectDateDialog(e);

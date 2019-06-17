@@ -96,6 +96,11 @@ namespace OutlookAddin.Domain
         public FacilityGroup facilityGroup { get; set; }
     }
 
+    public class SaveBookingParamFacility
+    {
+        public int id { get; set; }
+    }
+
     public class FacilityBookingOrder
     {
         public int version { get; set; }
@@ -223,6 +228,13 @@ namespace OutlookAddin.Domain
         public TimeSlotConfig fromTimeSlotConfig { get; set; }
         public TimeSlotConfig toTimeSlotConfig { get; set; }
         public string statusDesc { get; set; }
+    }
+
+    public class SaveBookingParamBookingDetail
+    {
+         public long? selectedDate { get; set; }
+        public int? fromTimeSlotConfigid { get; set; }
+        public int? toTimeSlotConfigid { get; set; }
     }
 
     public class Condo

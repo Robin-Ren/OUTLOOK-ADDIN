@@ -45,18 +45,34 @@ namespace OutlookAddin.Domain
 
         #region Properties
 
-        private Appointments _appointments;
+        private Appointments _parentAppointments;
 
-        public Appointments Appointments
+        public Appointments ParentAppointments
         {
             get
             {
-                return _appointments;
+                return _parentAppointments;
             }
 
             set
             {
-                _appointments = value;
+                _parentAppointments = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Appointments _childAppointments;
+
+        public Appointments ChildAppointments
+        {
+            get
+            {
+                return _childAppointments;
+            }
+
+            set
+            {
+                _childAppointments = value;
                 OnPropertyChanged();
             }
         }

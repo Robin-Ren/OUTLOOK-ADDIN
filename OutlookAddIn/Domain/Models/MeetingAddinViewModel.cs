@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using OutlookAddIn;
@@ -12,13 +13,15 @@ namespace OutlookAddin.Domain
         #region Private Members
         private static WebAPIDataAccess apiDataAccess;
 
-        private DateTime _dateStart;
-        private DateTime _dateEnd;
-        private string _mailBody;
-        private Facility _selectedRoom;
+        private DateTime _selectedDate;
+        private string _remarks;
+        private Facility _selectedFacility;
         private string _selectedRecipient;
-        private ObservableCollection<string> _recipients;
-        private Appointments _appointments;
+        private List<TimeSlot> _selectedTimeslots;
+        private Appointments _parentAppointments;
+        private Appointments _childAppointments;
+        private static List<BookingDetail> _parentAppointmentDetails;
+        private static List<BookingDetail> _childAppointmentDetails;
         /// <summary>
         /// The current view model being displayed.
         /// This may not be the selected tab as that tab could have sub views.
@@ -27,6 +30,7 @@ namespace OutlookAddin.Domain
 
         private static BookingsViewModel _bookingViewModel;
         private static LoginViewModel _loginViewModel;
+        private static AppointmentViewModel _appointmentViewModel;
         #endregion
 
         #region Public Properties
@@ -49,42 +53,32 @@ namespace OutlookAddin.Domain
             }
         }
 
-        public DateTime DateStart
+        public DateTime SelectedDate
         {
-            get { return _dateStart; }
+            get { return _selectedDate; }
             set
             {
-                _dateStart = value;
+                _selectedDate = value;
                 OnPropertyChanged();
             }
         }
 
-        public DateTime DateEnd
+        public string Remarks
         {
-            get { return _dateEnd; }
+            get { return _remarks; }
             set
             {
-                _dateEnd = value;
+                _remarks = value;
                 OnPropertyChanged();
             }
         }
 
-        public string MailBody
+        public Facility SelectedFacility
         {
-            get { return _mailBody; }
+            get { return _selectedFacility; }
             set
             {
-                _mailBody = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Facility SelectedRoom
-        {
-            get { return _selectedRoom; }
-            set
-            {
-                _selectedRoom = value;
+                _selectedFacility = value;
                 OnPropertyChanged();
             }
         }
@@ -98,24 +92,35 @@ namespace OutlookAddin.Domain
             }
         }
 
-        public ObservableCollection<string> Recipients
+        public List<TimeSlot> SelectedTimeslots
         {
             get
-            { return _recipients; }
+            { return _selectedTimeslots; }
             set
             {
-                _recipients = value;
+                _selectedTimeslots = value;
                 OnPropertyChanged();
             }
         }
 
-        public Appointments Appointments
+        public Appointments ParentAppointments
         {
             get
-            { return _appointments; }
+            { return _parentAppointments; }
             set
             {
-                _appointments = value;
+                _parentAppointments = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Appointments ChildAppointments
+        {
+            get
+            { return _childAppointments; }
+            set
+            {
+                _childAppointments = value;
                 OnPropertyChanged();
             }
         }
@@ -128,9 +133,8 @@ namespace OutlookAddin.Domain
 
         public MeetingAddinViewModel()
         {
-            DateStart = DateTime.Now;
-            DateEnd = DateTime.Now;
-            SelectedRoom = null;
+            SelectedDate = DateTime.Now;
+            SelectedFacility = null;
 
             // Initialize login view model
             if (_loginViewModel == null)
@@ -151,10 +155,16 @@ namespace OutlookAddin.Domain
         /// </summary>
         private async void InitializeBookingsViewModel(object sender, BackToBookingsArgs e)
         {
-            _bookingViewModel = new BookingsViewModel();
+            if (_bookingViewModel == null)
+                _bookingViewModel = new BookingsViewModel();
 
-            _appointments = await apiDataAccess.GetBookingRecords();
-            _bookingViewModel.Appointments = _appointments;
+            _parentAppointmentDetails = await apiDataAccess.GetBookingRecords(true);
+            _parentAppointments = Utils.ConvertBookingDetailsToAppointments(_parentAppointmentDetails);
+            _bookingViewModel.ParentAppointments = _parentAppointments;
+
+           _childAppointmentDetails = await apiDataAccess.GetBookingRecords(false);
+            _childAppointments = Utils.ConvertBookingDetailsToAppointments(_childAppointmentDetails);
+            _bookingViewModel.ChildAppointments = _childAppointments;
 
             _bookingViewModel.ClearEventInvocations("OpenNewBookingRooms");
             BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenRoomsDialog);
@@ -190,15 +200,15 @@ namespace OutlookAddin.Domain
                     return;
                 }
 
-                meetingItem.Location = SelectedRoom.name;
+                meetingItem.Location = SelectedFacility.name;
 
                 meetingItem.MeetingStatus = Outlook.OlMeetingStatus.olMeeting;
-                meetingItem.Body = MailBody;
+                meetingItem.Body = Remarks;
 
                 // Meeting dates
-                meetingItem.Start = this.DateStart;
-                meetingItem.End = this.DateEnd;
-                meetingItem.Subject = "Time slot to discuss Outlook Addin";
+                //meetingItem.Start = this.SelectedDate;
+                //meetingItem.End = this.DateEnd;
+                //meetingItem.Subject = "Time slot to discuss Outlook Addin";
 
                 object missing = System.Reflection.Missing.Value;
             }
@@ -256,58 +266,96 @@ namespace OutlookAddin.Domain
 
         private void NavigateToSelectDateDialog(object obj, NavigateToSelectDateDialogArgs e)
         {
-            _selectedRoom = e.SelectedRoom;
+            if (e != null && e.SelectedFacility != null)
+                _selectedFacility = e.SelectedFacility;
 
-            // Initialize the existing booked appointments
-            Appointments appointmentsForSelectedFacility = new Appointments();
-            if (_appointments != null)
+            SelectMeetingDateViewModel selectDateViewModel = new SelectMeetingDateViewModel(_selectedFacility.id);
+
+            if (this.SelectedDate != default(DateTime))
             {
-                foreach(var apt in _appointments)
-                {
-                    if(apt.FacilityID == _selectedRoom.id)
-                    {
-                        appointmentsForSelectedFacility.Add(apt);
-                    }
-                }
+                selectDateViewModel.SelectedDate = this.SelectedDate;
+            }
+            else
+            {
+                selectDateViewModel.SelectedDate = DateTime.Now;
             }
 
-            ////Get all timeslots by default dates
-            //long fromTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
-            //    DateTime.Now.Year,
-            //    DateTime.Now.Month,
-            //    DateTime.Now.Day,
-            //    00, 00, 00));
-            //long toTicks = Utils.ConvertDateTimeToUnixTicks(new DateTime(
-            //    DateTime.Now.AddDays(6).Year,
-            //    DateTime.Now.AddDays(6).Month,
-            //    DateTime.Now.AddDays(6).Day,
-            //    23, 59, 59));
-
-            //var timeSlots = await apiDataAccess.GetTimeSlots(
-            //    _selectedRoom.id,
-            //    fromTicks,
-            //    toTicks);
-
-            SelectMeetingDateViewModel selectDateViewModel = new SelectMeetingDateViewModel(_selectedRoom.id);
+            selectDateViewModel.ParentAppointmentDetails = _parentAppointmentDetails;
+            selectDateViewModel.ChildAppointmentDetails = _childAppointmentDetails;
 
             selectDateViewModel.ClearEventInvocations("BackToBookingsEvent");
-            selectDateViewModel.ClearEventInvocations("NavigateToSelectDateDialogEvent");
+            selectDateViewModel.ClearEventInvocations("NavigateToConfirmAppointmentEvent");
             SelectMeetingDateViewModel.BackToRoomsEvent += new BackToRoomsEventHandler(OnOpenRoomsDialog);
-            //SelectMeetingDateViewModel.NavigateToTimeslotsEvent += NavigateToSelectDateDialog;
+            SelectMeetingDateViewModel.NavigateToConfirmAppointmentEvent += NavigateToConfirmAppointmentDialog;
 
+            selectDateViewModel.ClearSelectedTimeSlots();
             // Set the select date view model as the current view model
             CurrentViewModel = selectDateViewModel;
         }
 
-        private void OnOpenNewAppointmentDialog(object sender, NavigateToAddAppointmentEventArgs e)
+        private void NavigateToConfirmAppointmentDialog(object obj, NavigateToConfirmAppointmentArgs e)
         {
-            AppointmentViewModel appointmentModel = new AppointmentViewModel();
+            SelectMeetingDateViewModel selectDateModel = CurrentViewModel as SelectMeetingDateViewModel;
+            this._selectedTimeslots = selectDateModel.GetSelectedTimeSlots();
+            if (_selectedTimeslots == null || _selectedTimeslots.Count == 0)
+                return;
 
-            appointmentModel.ClearEventInvocations("NavigateToBookingRooms");
-            AppointmentViewModel.NavigateToBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenRoomsDialog);
+            this._selectedDate = selectDateModel.SelectedDate;
 
-            // Set the rooms as the current view model
-            CurrentViewModel = appointmentModel;
+            if(_appointmentViewModel == null)
+                _appointmentViewModel = new AppointmentViewModel();
+            _appointmentViewModel.SelectedFacility = _selectedFacility;
+            _appointmentViewModel.Remarks = string.Empty;
+            var selectedEnds = selectDateModel.GetSelectedStartEndTimeslots();
+            if (selectedEnds.Item1 != null)
+            {
+                _appointmentViewModel.StartTime = selectedEnds.Item1.from.ToSingaporeDateTimeFromEpoch();
+            }
+            if (selectedEnds.Item2 != null)
+            {
+                _appointmentViewModel.EndTime = selectedEnds.Item2.to.ToSingaporeDateTimeFromEpoch();
+            }
+            _appointmentViewModel.ErrorMessage = string.Empty;
+
+            _appointmentViewModel.ClearEventInvocations("AddAppointmentEvent");
+            _appointmentViewModel.ClearEventInvocations("BackToSelectDate");
+            AppointmentViewModel.AddAppointmentEvent += new AddAppointmentEventHandler(OnAddAppointment);
+            AppointmentViewModel.BackToSelectDate += new BackToSelectDateEventHandler(BackToSelectDate);
+
+            // Set the select date view model as the current view model
+            CurrentViewModel = _appointmentViewModel;
+        }
+        private async void OnAddAppointment(object sender, SaveBookingRequestArgs e)
+        {
+            e.facility = new SaveBookingParamFacility
+            {
+                id = _selectedFacility.id
+            };
+            e.bookingDetails = new List<SaveBookingParamBookingDetail>
+            {
+                 new SaveBookingParamBookingDetail
+                {
+                    selectedDate = _selectedDate.ToSingaporeEpochTime(),
+                    fromTimeSlotConfigid = _selectedTimeslots[0].timeSlotConfigId,
+                    toTimeSlotConfigid = _selectedTimeslots[_selectedTimeslots.Count - 1].timeSlotConfigId
+                }
+            };
+
+            var errorMessage = await apiDataAccess.SaveBookingRequest(e);
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                // Go to main view
+                InitializeBookingsViewModel(null, null);
+            }
+            else
+            {
+                _appointmentViewModel.ErrorMessage = errorMessage;
+            }
+        }
+
+        private void BackToSelectDate(object sender)
+        {
+            NavigateToSelectDateDialog(null, null);
         }
         #endregion Command Implementations
 

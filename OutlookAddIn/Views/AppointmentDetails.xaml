@@ -7,10 +7,6 @@
              Background="{DynamicResource MaterialDesignPaper}"
              >
 
-    <UserControl.DataContext>
-        <viewModel:AppointmentViewModel />
-    </UserControl.DataContext>
-
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -44,11 +40,11 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <Button Style="{StaticResource MaterialDesignToolForegroundButton}"
-                            Command="{Binding Path=OpenNewBookingRoomsDialogCommand}"
+                            Command="{Binding Path=BackToSelectDateDialogCommand}"
                             HorizontalAlignment="Right">
                         <materialDesign:PackIcon Kind="ArrowLeft" HorizontalAlignment="Left" />
                     </Button>
-                    <TextBlock Margin="0" Text="Add Appointment" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    <TextBlock Margin="0" Text="Confirm Appointment" HorizontalAlignment="Center" VerticalAlignment="Center"
                                FontWeight="Bold" FontSize="18"/>
                 </StackPanel>
             </materialDesign:ColorZone>
@@ -58,27 +54,60 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="250" />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Column="0" Grid.Row="0" Content="Subject" />
-                <Label Grid.Column="0" Grid.Row="1" Content="Start Time" />
-                <Label Grid.Column="0" Grid.Row="2" Content="End Time" />
+                <Label Grid.Column="0" Grid.Row="0" Content="Facility"
+                       FontSize="20" FontWeight="Bold" />
+                <Label Grid.Column="0" Grid.Row="1" Content="Start Time"
+                       FontSize="20" FontWeight="Bold"/>
+                <Label Grid.Column="0" Grid.Row="2" Content="End Time"
+                       FontSize="20" FontWeight="Bold"/>
+                <Label Grid.Column="0" Grid.Row="3" Content="Remarks"
+                       FontSize="20" FontWeight="Bold"/>
 
-                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=Subject, Mode=TwoWay, UpdateSourceTrigger=LostFocus, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="185"/>
-                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=StartTime, Mode=TwoWay, UpdateSourceTrigger=LostFocus, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="185" />
-                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=EndTime, Mode=TwoWay, UpdateSourceTrigger=LostFocus, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="185" />
-
-                <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Command="{Binding Path=OnAddAppointment}"
-                        Width="150" Margin="8 8 8 8"
-                        Height="28" Content="Add" 
-                        ToolTip="Resource name: MaterialDesignRaisedAccentButton"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth3"/>
+                <TextBox Grid.Column="1" Grid.Row="0"
+                         Text="{Binding Path=SelectedFacilityName, Mode=OneWay}"
+                         HorizontalAlignment="Left" VerticalAlignment="Top" Width="185"
+                         Margin="32,0,0,0"
+                         IsReadOnly="True"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=StartTime, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="185"
+                         Margin="32,0,0,0"
+                           IsReadOnly="True"/>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=EndTime, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="185"
+                         Margin="32,0,0,0"
+                           IsReadOnly="True"/>
+                <TextBox Grid.Column="1" Grid.Row="3"
+                         Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                         VerticalAlignment="Top"
+                         Height="80" Width="185"
+                         Text="{Binding Path=Remarks, Mode=TwoWay}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         materialDesign:HintAssist.Hint="Input remarks"/>
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2"
+                            HorizontalAlignment="Center"
+                            Margin="8 20 8 8">
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                            Command="{Binding Path=AddAppointmentCommand}"
+                            Width="200" Height="38"
+                            Content="Save Request" 
+                            materialDesign:ShadowAssist.ShadowDepth="Depth3"/>
+                </StackPanel>
+                <StackPanel Grid.Row="5" Grid.ColumnSpan="2"
+                            Orientation="Horizontal" Margin="0,10,0,0.2">
+                    <TextBlock VerticalAlignment="Top" HorizontalAlignment="Left"
+                               Foreground="Red" FontSize="12"
+                               Text="{Binding Path=ErrorMessage, UpdateSourceTrigger=PropertyChanged}"
+                               IsEnabled="False"
+                                       />
+                </StackPanel>
             </Grid>
         </DockPanel>
     </AdornerDecorator>
