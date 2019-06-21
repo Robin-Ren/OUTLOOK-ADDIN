@@ -65,6 +65,7 @@ namespace OutlookAddIn.WebAPIClient
 
         public async Task<List<BookingDetail>> GetBookingRecords(bool isParent)
         {
+            List<BookingDetail> result = new List<BookingDetail>();
             try
             {
                 // HTTP GET
@@ -87,10 +88,10 @@ namespace OutlookAddIn.WebAPIClient
             }
             catch (Exception ex)
             {
-                return null;
+                return result;
             }
 
-            return null;
+            return result;
         }
 
         public async Task<ObservableCollectionWrapper<Facility>> GetFacilitiesVenue()
@@ -190,18 +191,25 @@ namespace OutlookAddIn.WebAPIClient
 
         public async Task<string> SaveBookingRequest(SaveBookingRequestArgs args)
         {
-            StringContent content = new StringContent(JsonConvert.SerializeObject(args), Encoding.UTF8, "application/json");
-            // HTTP POST
-            var response = await client.PostAsync(string.Format("api/condos/{0}/facility-bookings", GlobalConstants.WebApiCondoId), content);
+            try
+            {
+                StringContent content = new StringContent(JsonConvert.SerializeObject(args), Encoding.UTF8, "application/json");
+                // HTTP POST
+                var response = await client.PostAsync(string.Format("api/condos/{0}/facility-bookings", GlobalConstants.WebApiCondoId), content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                string data = await response.Content.ReadAsStringAsync();
-                var authResult = JsonConvert.DeserializeObject<AuthenticationResult>(data);
+                if (response.IsSuccessStatusCode)
+                {
+                    string data = await response.Content.ReadAsStringAsync();
+                    var authResult = JsonConvert.DeserializeObject<AuthenticationResult>(data);
+                }
+                else
+                {
+                    return string.Format("Failed to save the booking. Response: {0}", response.ReasonPhrase);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return string.Format("Failed to save the booking. Response: {0}", response.ReasonPhrase);
+                return string.Format("Failed to save the booking. Error: {0}", ex.Message);
             }
 
             return string.Empty;

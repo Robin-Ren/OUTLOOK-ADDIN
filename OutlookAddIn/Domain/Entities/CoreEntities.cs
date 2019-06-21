@@ -9,7 +9,7 @@ namespace OutlookAddin.Domain
     public class FacilityBookingDetailSearchCriteria
     {
         public int tenantId { get; set; }
-        public int tenantUserId { get; set; }
+        public int? tenantUserId { get; set; }
         public int? condoFacilityId { get; set; }
         public int? condoFacilityGroupId { get; set; }
         public int? timeSlotConfigid { get; set; }
@@ -35,7 +35,7 @@ namespace OutlookAddin.Domain
         public bool? isBlocking { get; set; }
         public bool? isCurrent { get; set; }
         public int? condoId { get; set; }
-        public int? minimumDepositAmount { get; set; }
+        public string minimumDepositAmount { get; set; }
     }
 
     public class FacilitySearchCriteria
@@ -61,9 +61,9 @@ namespace OutlookAddin.Domain
         public string updatedBy { get; set; }
         public int? totalUser { get; set; }
         public int? totalAccountedUser { get; set; }
-        public int? blockNo { get; set; }
-        public int? floorNo { get; set; }
-        public int? unitNo { get; set; }
+        public string blockNo { get; set; }
+        public string floorNo { get; set; }
+        public string unitNo { get; set; }
         public int? type { get; set; }
         public string code { get; set; }
         public string name { get; set; }
@@ -92,7 +92,7 @@ namespace OutlookAddin.Domain
         public string rateDtType { get; set; }
         public string imageFilePath { get; set; }
         public string fullImageFilePath { get; set; }
-        public decimal? latestRate { get; set; }
+        public string latestRate { get; set; }
         public FacilityGroup facilityGroup { get; set; }
     }
 
@@ -118,8 +118,8 @@ namespace OutlookAddin.Domain
         public string paymentType { get; set; }
         public string bookedBaseAmount { get; set; }
         public string bookedGstAmount { get; set; }
-        public decimal? refundableBaseAmount { get; set; }
-        public decimal? refundableGstAmount { get; set; }
+        public string refundableBaseAmount { get; set; }
+        public string refundableGstAmount { get; set; }
         public List<Payment> payments { get; set; }
     }
 
@@ -216,9 +216,9 @@ namespace OutlookAddin.Domain
         public long? cancelledTime { get; set; }
         public string cancelledRemark { get; set; }
         public string detailBaseAmount { get; set; }
-        public int? detailRefundableBaseAmount { get; set; }
-        public int? detailRefundableGstAmount { get; set; }
-        public int? detailCancelledGstRate { get; set; }
+        public string detailRefundableBaseAmount { get; set; }
+        public string detailRefundableGstAmount { get; set; }
+        public string detailCancelledGstRate { get; set; }
         public FacilityBooking facilityBooking { get; set; }
         public int? fromTimeSlotConfigid { get; set; }
         public string fromTimeSlotConfigDesc { get; set; }

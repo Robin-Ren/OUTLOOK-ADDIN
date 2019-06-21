@@ -7,6 +7,7 @@
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:viewModel="clr-namespace:OutlookAddin.Domain"
              xmlns:view="clr-namespace:OutlookAddIn"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -87,6 +88,12 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
+                            <fa:ImageAwesome Grid.Row="1" Grid.ColumnSpan="2"
+                                 Width="40" Foreground="BurlyWood"
+                                 Icon="Refresh" Spin="{Binding Path=IsLoading}"
+                                 Visibility="{Binding Path=IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    HorizontalAlignment="Center"
+                                 VerticalAlignment="Top"/>
                             <TextBox Opacity="1" materialDesign:HintAssist.Hint="User ID"
                                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                      Margin="0,12,0,39.6" Grid.ColumnSpan="2"

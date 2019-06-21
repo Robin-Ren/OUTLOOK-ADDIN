@@ -64,7 +64,7 @@
                           MaxHeight="700" Width="450"
                           VerticalScrollBarVisibility="Visible">
                 <StackPanel>
-                    <Expander HorizontalAlignment="Left" Header="Parent's Table Bookings"
+                    <Expander HorizontalAlignment="Left" Header="Scheduled Booking Records"
                           FontWeight="Bold">
                         <ListView  Margin="0" Name="lvParentDataBinding"
                           ItemsSource="{Binding ParentAppointments}"
@@ -101,7 +101,7 @@
                                 Height="2"
                                 HorizontalAlignment="Stretch"
                                 SnapsToDevicePixels="True" />
-                    <Expander HorizontalAlignment="Left" Header="Child's Table Bookings"
+                    <Expander HorizontalAlignment="Left" Header="History Booking Records"
                           FontWeight="Bold">
                         <ListView  Margin="0" Name="lvchildDataBinding"
                           ItemsSource="{Binding ChildAppointments}"

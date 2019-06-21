@@ -1,8 +1,9 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OutlookAddin.Domain
 {
-    public delegate void BackToBookingsEventHandler(object sender, BackToBookingsArgs e);
+    public delegate Task BackToBookingsEventHandler(object sender, BackToBookingsArgs e);
     public delegate void NavigateToSelectDateDialogEventHandler(object sender, NavigateToSelectDateDialogArgs e);
 
     public class RoomsViewModel : ABaseViewModel

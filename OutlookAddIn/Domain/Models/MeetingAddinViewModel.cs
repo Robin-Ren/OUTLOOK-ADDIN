@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using OutlookAddIn;
 using OutlookAddIn.WebAPIClient;
@@ -136,46 +137,77 @@ namespace OutlookAddin.Domain
             SelectedDate = DateTime.Now;
             SelectedFacility = null;
 
+            // Initialize WebAPI Client
+            apiDataAccess = new WebAPIDataAccess();
+
             // Initialize login view model
             if (_loginViewModel == null)
             {
-                InitializeLoginViewModel(null, null);
+                InitializeLoginViewModel();
+            }
+            else
+            {
+                TryReLogin();
             }
 
             // Commands
             AcceptCommand = new RelayCommand(OnAccept);
             CancelCommand = new RelayCommand(OnCancel);
-
-            // Initialize WebAPI Client
-            apiDataAccess = new WebAPIDataAccess();
         }
 
         /// <summary>
         /// Initialize Bookings view model object
         /// </summary>
-        private async void InitializeBookingsViewModel(object sender, BackToBookingsArgs e)
+        private async Task InitializeBookingsViewModel(object sender, BackToBookingsArgs e)
         {
             if (_bookingViewModel == null)
                 _bookingViewModel = new BookingsViewModel();
 
+            _loginViewModel.IsLoading = true;
             _parentAppointmentDetails = await apiDataAccess.GetBookingRecords(true);
             _parentAppointments = Utils.ConvertBookingDetailsToAppointments(_parentAppointmentDetails);
             _bookingViewModel.ParentAppointments = _parentAppointments;
 
-           _childAppointmentDetails = await apiDataAccess.GetBookingRecords(false);
+            _childAppointmentDetails = await apiDataAccess.GetBookingRecords(false);
             _childAppointments = Utils.ConvertBookingDetailsToAppointments(_childAppointmentDetails);
             _bookingViewModel.ChildAppointments = _childAppointments;
 
             _bookingViewModel.ClearEventInvocations("OpenNewBookingRooms");
             BookingsViewModel.OpenNewBookingRooms += new OpenNewBookingRoomsEventHandler(OnOpenRoomsDialog);
 
+            if (_parentAppointments != null && _childAppointments != null)
+            {
+                _loginViewModel.IsLoading = false;
+            }
             CurrentViewModel = _bookingViewModel;
+        }
+
+        private async void TryReLogin()
+        {
+            var args = new LoginEventArgs();
+            args.UserName = _loginViewModel.UserName;
+            args.Password = _loginViewModel.Password;
+            args.RememberMe = _loginViewModel.RememberMe;
+
+            _loginViewModel.IsLoading = true;
+            _loginViewModel.IsSucceeded = await apiDataAccess.DoLogin(args);
+
+            if (_loginViewModel.IsSucceeded)
+            {
+                _loginViewModel.LoginMessage = string.Empty;
+                // Initialize booking view model
+                InitializeBookingsViewModel(null, null);
+            }
+            else
+            {
+                InitializeLoginViewModel();
+            }
         }
 
         /// <summary>
         /// Initialize Login view model object
         /// </summary>
-        private void InitializeLoginViewModel(object sender, EventArgs e)
+        private void InitializeLoginViewModel()
         {
             _loginViewModel = new LoginViewModel();
             _loginViewModel.ClearEventInvocations("DoLogin");
@@ -247,20 +279,30 @@ namespace OutlookAddin.Domain
 
         private async void OnDoLogin(object sender, LoginEventArgs e)
         {
-            _loginViewModel.IsSucceeded = await apiDataAccess.DoLogin(e);
-
-            if (_loginViewModel.IsSucceeded)
+            try
             {
-                _loginViewModel.LoginMessage = string.Empty;
-                // Initialize booking view model
-                if (_bookingViewModel == null)
+                _loginViewModel.IsLoading = true;
+                _loginViewModel.IsSucceeded = await apiDataAccess.DoLogin(e);
+
+                if (_loginViewModel.IsSucceeded)
                 {
-                    InitializeBookingsViewModel(null, null);
+                    _loginViewModel.LoginMessage = string.Empty;
+                    // Initialize booking view model
+                    if (_bookingViewModel == null)
+                    {
+                        var result = InitializeBookingsViewModel(null, null);
+                    }
                 }
+                else
+                {
+                    _loginViewModel.LoginMessage = GlobalConstants.LoginFailedMessage;
+                }
+                _loginViewModel.IsLoading = false;
             }
-            else
+            catch (Exception ex)
             {
                 _loginViewModel.LoginMessage = GlobalConstants.LoginFailedMessage;
+                _loginViewModel.IsLoading = false;
             }
         }
 
@@ -302,7 +344,7 @@ namespace OutlookAddin.Domain
 
             this._selectedDate = selectDateModel.SelectedDate;
 
-            if(_appointmentViewModel == null)
+            if (_appointmentViewModel == null)
                 _appointmentViewModel = new AppointmentViewModel();
             _appointmentViewModel.SelectedFacility = _selectedFacility;
             _appointmentViewModel.Remarks = string.Empty;
@@ -345,7 +387,7 @@ namespace OutlookAddin.Domain
             if (string.IsNullOrEmpty(errorMessage))
             {
                 // Go to main view
-                InitializeBookingsViewModel(null, null);
+                await InitializeBookingsViewModel(null, null);
             }
             else
             {

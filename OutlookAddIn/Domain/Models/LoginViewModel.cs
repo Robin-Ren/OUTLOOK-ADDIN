@@ -14,6 +14,7 @@ namespace OutlookAddin.Domain
         public LoginViewModel()
         {
             LoginCommand = new RelayCommand(Login);
+            _isLoading = false;
         }
 
         #region Events
@@ -60,6 +61,7 @@ namespace OutlookAddin.Domain
         private bool _rememberMe;
         private bool _isSucceeded;
         private string _loginMessage;
+        private bool _isLoading;
 
         public string UserName
         {
@@ -107,6 +109,17 @@ namespace OutlookAddin.Domain
             set
             {
                 _loginMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set
+            {
+                if (_isLoading == value) return;
+                _isLoading = value;
                 OnPropertyChanged();
             }
         }
